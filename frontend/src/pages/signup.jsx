@@ -2,31 +2,17 @@ import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import Design from '../components/desgin.jsx'
 import { axiosInstance } from "../connection/axios.js";
+import { useForm } from 'react-hook-form';
 const Signup = () => {
-
+    const { handleSubmit, reset, register, watch, formState: { errors } } = useForm();
     const [showPassword, setShowPassword] = useState(false);
 
-    const [formData, setFormData] = useState({
-        fullName: "",
-        email: "",
-        password: ""
-    });
 
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-
-
-        });
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        console.log(formData);
-        const res = await axiosInstance.post('/users/register', formData);
+    const onSubmit = async (data) => {
+        console.log(data);
+        const res = await axiosInstance.post('/users/register', data);
         console.log(res);
-        
+        reset()
     };
 
 
@@ -56,7 +42,7 @@ const Signup = () => {
             <div className="flex w-full md:w-1/2 items-center justify-center  p-6">
 
                 <form
-                    onSubmit={handleSubmit}
+                    onSubmit={handleSubmit(onSubmit)}
                     className="flex flex-col gap-3 bg-white/70 p-8 z-100 w-md rounded-2xl shadow-lg"
                 >
 
@@ -65,28 +51,38 @@ const Signup = () => {
                     <div className="flex items-center border border-gray-300 rounded-lg h-12 px-3 focus-within:border-blue-500 transition">
 
                         <input
-                            name="fullName"
-                            value={formData.fullName}
-                            onChange={handleChange}
-                            type="text"
+                            {...register('name', { required: "FullName is required" })}
                             placeholder="Enter your Full Name"
                             className="w-full h-full outline-none bg-transparent"
                         />
                     </div>
+                    {errors.name && (
+                        <p className="text-red-500 text-sm">
+                            {errors.name.message}
+                        </p>
+                    )}
 
                     {/* Email */}
                     <label className="font-semibold text-gray-800">Email</label>
                     <div className="flex items-center border border-gray-300 rounded-lg h-12 px-3 focus-within:border-blue-500 transition">
 
                         <input
+                            {...register('email', {
+                                required: "Email is Required*", pattern: {
+                                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                                    message: "Enter a valid email address"
+                                } })}
                             name="email"
-                            value={formData.email}
-                            onChange={handleChange}
                             type="email"
                             placeholder="Enter your Email"
                             className="w-full h-full outline-none bg-transparent"
                         />
                     </div>
+                    {errors.email && (
+                        <p className="text-red-500 text-sm">
+                            {errors.email.message}
+                        </p>
+                    )}
 
                     {/* Password */}
                     <label className="font-semibold text-gray-800">Password</label>
@@ -94,11 +90,17 @@ const Signup = () => {
 
                         <input
                             name="password"
-                            value={formData.password}
-                            onChange={handleChange}
+                            {...register('password', {
+                                required: "Password is required*",
+                                minLength: {
+                                    value: 8,
+                                    message: "Password must be at least 8 characters*"
+                                }
+                            })}
                             type={showPassword ? "text" : "password"}
                             placeholder="Enter your Password"
                             className="w-full h-full outline-none bg-transparent"
+                            alt="current-password"
                         />
 
                         <button
@@ -108,6 +110,11 @@ const Signup = () => {
                             {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                         </button>
                     </div>
+                    {errors.password && (
+                        <p className="text-red-500 text-sm">
+                            {errors.password.message}
+                        </p>
+                    )}
 
                     {/* Submit */}
                     <button
