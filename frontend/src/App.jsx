@@ -1,13 +1,12 @@
 import { useState } from 'react'
-
 import './App.css'
-import Signup from './pages/signup'
-import Login from './pages/login'
+
+import { Outlet } from 'react-router'
 function App() {
- 
+
   return (
     <>
-      <Signup />
+      <Outlet />
     </>
   )
 }

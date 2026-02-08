@@ -1,20 +1,23 @@
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import Design from '../components/desgin.jsx'
+import Design from '../components/Design.jsx'
 import { axiosInstance } from "../connection/axios.js";
 import { useForm } from 'react-hook-form';
+import { Link } from "react-router";
+
 const Signup = () => {
-    const { handleSubmit, reset, register, watch, formState: { errors } } = useForm();
+    const { handleSubmit, reset, register, formState: { errors } } = useForm({ mode: 'onBlur' });
     const [showPassword, setShowPassword] = useState(false);
 
 
     const onSubmit = async (data) => {
         console.log(data);
-        const res = await axiosInstance.post('/users/register', data);
-        console.log(res);
+        await axiosInstance.post('/users/register', data).then((res) => {
+            console.log(res);
+        })
+        
         reset()
     };
-
 
     return (
         <div className="min-h-screen flex bg-gray-100 relative">
@@ -24,14 +27,14 @@ const Signup = () => {
                 <div className="z-50 ">
                     <div className="flex gap-2 mb-10">
                         <h1 className="text-4xl font-bold mb-8">BudgetWise</h1>
-                        <img className=" bottom-0 right-0 w-20 h-12 z-40 " src="./public/wallet.png" alt="" srcset="" />
+                        <img className=" bottom-0 right-0 w-20 h-12 z-40 " src="./wallet.png" alt="" />
                     </div>
                     <p className="text-4xl opacity-80 mb-2 z-50 font-bold">
                         Track Smart. <br /> Spend Smart. <span className="text-blue-950 shadow text-shadow-white ">Predict Smart.</span>
                     </p>
                     <div className="relative w-full">
-                        <img className="opacity-80 rotate-x-12" src="./public/light-dash.png" alt="" srcset="" />
-                        <img className="absolute bottom-0 right-0 w-52" src="./public/software-agent.png" alt="" srcset="" />
+                        <img className="opacity-80 rotate-x-12" src="./light-dash.png" alt="" />
+                        <img className="absolute bottom-0 right-0 w-52" src="./software-agent.png" alt="" />
 
                     </div>
                 </div>
@@ -40,11 +43,16 @@ const Signup = () => {
 
             {/* RIGHT SIDE FORM */}
             <div className="flex w-full md:w-1/2 items-center justify-center  p-6">
-
                 <form
                     onSubmit={handleSubmit(onSubmit)}
                     className="flex flex-col gap-3 bg-white/70 p-8 z-100 w-md rounded-2xl shadow-lg"
                 >
+                <div className="flex gap-3 items-center mb-4 ">
+                    <div className="w-1 h-8 bg-violet-800 rounded-full">
+
+                    </div>
+                    <div className="text-3xl font-bold font-sans mb-1">Sign up</div>
+                </div>
 
                     {/* Full Name */}
                     <label className="font-semibold text-gray-800">Full Name</label>
@@ -127,9 +135,9 @@ const Signup = () => {
                     {/* Login Link */}
                     <p className="text-center text-sm">
                         Have an account?
-                        <span className="text-blue-500 font-medium cursor-pointer ml-1">
+                        <Link className="text-blue-500 font-medium cursor-pointer ml-1" to={'/login'}>
                             Login
-                        </span>
+                        </Link>
                     </p>
 
                 </form>
