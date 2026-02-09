@@ -48,9 +48,7 @@ const Login = () => {
                     className="flex flex-col gap-3 bg-white/70 p-8 z-100 w-md rounded-2xl shadow-lg"
                 >
                     <div className="flex gap-3 items-center mb-4 ">
-                        <div className="w-1 h-8 bg-violet-800 rounded-full">
-
-                        </div>
+                        <div className="w-1 h-8 bg-violet-800 rounded-full"></div>
                         <div className="text-3xl font-bold font-sans mb-1">Login</div>
                     </div>
 
