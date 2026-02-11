@@ -6,7 +6,7 @@ export default function NavDropdown() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="relative inline-block group text-left">
+    <div className="relative inline-block z-50 group text-left">
       {/* Button */}
       <button
         onClick={() => setOpen(!open)}

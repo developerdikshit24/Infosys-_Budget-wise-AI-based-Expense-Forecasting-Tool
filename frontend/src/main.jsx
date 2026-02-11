@@ -7,13 +7,15 @@ import Signup from './pages/signup'
 import Login from './pages/login'
 import Dashboard from './pages/Dashboard.jsx';
 import MainLayout from './pages/MainLayout.jsx';
+import AddExpense from './pages/AddExpense.jsx';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <Routes>
       <Route path='/' element={<App />}>
         <Route path='' element={<MainLayout />}>
-        <Route path='' element={<Dashboard />} />
+          <Route path='' element={<Dashboard />} />
+          <Route path='/add-expense' element={<AddExpense />} />
         </Route>
         <Route path='/login' element={<Login />} />
         <Route path='/signup' element={<Signup />} />

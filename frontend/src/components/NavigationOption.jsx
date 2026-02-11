@@ -16,7 +16,7 @@ const NavigationOption = () => {
     ];
 
     return (
-        <div className='w-1/6 h-full mt-2'>
+        <div className='w-1/6 h-full'>
             <div className='flex flex-col h-full py-2 w-full'>
                 <div className="bg-gray-100/80 backdrop-filter backdrop-blur rounded-lg shadow-lg">
                     <ul className="py-3">

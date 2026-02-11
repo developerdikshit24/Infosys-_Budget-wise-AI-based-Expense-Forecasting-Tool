@@ -10,7 +10,7 @@ const MainLayout = ({ Children }) => {
                 <div className="absolute -top-40 -left-40 w-[700px] h-[700px] bg-white/40 rounded-full blur-[160px]"></div>
                 <div className="absolute bottom-[-200px] right-[-150px] w-[600px] h-[600px] bg-white/30 rounded-full blur-[180px]"></div>
                 <Navbar />
-                <div className="flex w-full justify-center z-50 relative ">
+                <div className="flex w-full justify-center z-30 relative ">
                     <div className='container px-3 h-full flex justify-between items-center'>
                         <NavigationOption />
                         <Outlet/>
