@@ -3,7 +3,7 @@ import AddExpenseCard from '../components/AddExpenseCard'
 
 const AddExpense = () => {
     return (
-        <div className='w-2/3 flex justify-center items-center'>
+        <div className='w-4/6 flex justify-center items-center'>
             <AddExpenseCard />
         </div>
     )

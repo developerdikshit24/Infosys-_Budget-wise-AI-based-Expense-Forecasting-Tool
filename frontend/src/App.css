@@ -1,2 +1,37 @@
 @import "tailwindcss";
 
+/* remove default look */
+.budget-range {
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+/* THUMB (circle button) */
+.budget-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 22px;
+    width: 22px;
+    border-radius: 9999px;
+    background: #f59e0b;
+    border: 4px solid white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.budget-range::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+    background: #fbbf24;
+}
+
+/* Firefox */
+.budget-range::-moz-range-thumb {
+    height: 22px;
+    width: 22px;
+    border-radius: 9999px;
+    background: #f59e0b;
+    border: 4px solid white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+}

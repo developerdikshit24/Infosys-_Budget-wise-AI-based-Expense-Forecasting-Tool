@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import Design from '../components/Design.jsx'
 import { axiosInstance } from "../connection/axios.js";
 import { useForm } from 'react-hook-form';
 import { Link } from "react-router";
@@ -22,7 +21,6 @@ const Signup = () => {
     return (
         <div className="min-h-screen flex bg-gray-100 relative">
             {/* LEFT SIDE */}
-            <Design />
             <div className="hidden md:flex w-1/2 text-white items-center justify-center ">
                 <div className="z-50 ">
                     <div className="flex gap-2 mb-10">

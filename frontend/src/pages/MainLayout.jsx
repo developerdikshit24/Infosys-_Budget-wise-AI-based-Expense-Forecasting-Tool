@@ -1,9 +1,7 @@
-import React, { Children } from 'react'
 import Navbar from '../components/navbar'
 import NavigationOption from '../components/NavigationOption'
-import PredictionLayout from '../components/PredictionLayout'
 import { Outlet } from 'react-router'
-const MainLayout = ({ Children }) => {
+const MainLayout = () => {
     return (
         <div className='min-h-screen  bg-[linear-gradient(135deg,#e9eefb_0%,#cfd8f3_25%,#b8c7ee_55%,#a9c2ec_100%)]'>
             <div className="relative min-h-screen  overflow-hidden bg-[linear-gradient(135deg,#e9eefb_0%,#cfd8f3_25%,#b8c7ee_55%,#a9c2ec_100%)]">
@@ -13,8 +11,8 @@ const MainLayout = ({ Children }) => {
                 <div className="flex w-full justify-center z-30 relative ">
                     <div className='container px-3 h-full flex justify-between items-center'>
                         <NavigationOption />
-                        <Outlet/>
-                        <PredictionLayout />
+                        <Outlet />
+                        
                     </div>
                 </div>
                 {/* </div> */}

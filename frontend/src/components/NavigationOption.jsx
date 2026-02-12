@@ -11,7 +11,7 @@ const NavigationOption = () => {
         { name: "Categories", path: "/categories", icon:'./Categories.png'},
         { name: "Reports", path: "/reports", icon:'./Report.png'},
         { name: "Expense Analysis", path: "/analysis", icon:'./analytics.png'},
-        { name: "Monthly Budget", path: "/budget", icon:'./Monthly Budget.png'},
+        { name: "Monthly Budget", path: "/monthly-budget", icon:'./Monthly Budget.png'},
         { name: "Settings", path: "/setting", icon:'./setting.png'},
     ];
 

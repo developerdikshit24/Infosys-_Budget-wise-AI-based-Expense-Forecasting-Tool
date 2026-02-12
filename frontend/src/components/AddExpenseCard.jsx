@@ -28,7 +28,7 @@ const AddExpenseCard = () => {
 
                     {/* Select */}
                     <select
-                        className="appearance-none bg-white  backdrop-blur-md w-full pl-11 pr-12 py-3  rounded-xl shadow-md  outline-none  focus:border-blue-500 focus:ring-2 focus:ring-blue-800/40 text-gray-700 font-semibold transition-all duration-200 group-hover:shadow-lg cursor-pointer"
+                        className="appearance-none bg-white   backdrop-blur-md w-full pl-11 pr-12 py-3  rounded-xl shadow-md  outline-none  focus:border-blue-500 focus:ring-2 focus:ring-blue-800/40 text-gray-700 font-semibold transition-all duration-200 group-hover:shadow-lg cursor-pointer"
                         defaultValue=""
                     >
                         <option value="" disabled>Select Category</option>
