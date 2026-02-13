@@ -13,7 +13,8 @@ import Categories from './pages/Categories.jsx';
 import MonthlyBudget from './pages/MonthlyBudget.jsx';
 import { Provider } from 'react-redux'
 import store from './stores/store.js';
-import Login from './pages/login.jsx';
+import Login from './pages/Login.jsx';
+
 
 createRoot(document.getElementById('root')).render(
   <Provider store={store}>
