@@ -1,18 +1,22 @@
 import React from 'react'
+import { useSelector } from 'react-redux';
 import { Link, Links } from 'react-router'
 
 
 
 const NavigationOption = () => {
+
+    const { loggedUser } = useSelector(state => state.authentication)
+    
     // Menu Items
     const menuItems = [
-        { name: "Dashboard", path: "/", icon:'./Dashboard.png'},
-        { name: "Add Expense", path: "/add-expense", icon:'./Add Expense.png'},
-        { name: "Categories", path: "/categories", icon:'./Categories.png'},
-        { name: "Reports", path: "/reports", icon:'./Report.png'},
-        { name: "Expense Analysis", path: "/analysis", icon:'./analytics.png'},
-        { name: "Monthly Budget", path: "/monthly-budget", icon:'./Monthly Budget.png'},
-        { name: "Settings", path: "/setting", icon:'./setting.png'},
+        { name: "Dashboard", path: "/", icon: './Dashboard.png' },
+        { name: "Add Expense", path: "/add-expense", icon: './Add Expense.png' },
+        { name: "Categories", path: "/categories", icon: './Categories.png' },
+        { name: "Reports", path: "/reports", icon: './Report.png' },
+        { name: "Expense Analysis", path: "/analysis", icon: './analytics.png' },
+        { name: "Monthly Budget", path: "/monthly-budget", icon: './Monthly Budget.png' },
+        { name: "Settings", path: "/setting", icon: './setting.png' },
     ];
 
     return (
@@ -50,7 +54,7 @@ const NavigationOption = () => {
                 <div className='flex gap-4  items-center'>
                     <img className='w-12 h-12' src="./user.png" alt="user" />
                     <div className="flex flex-col">
-                        <h1 className='font-semibold text-md text-blue-950/80'>Dikshit Tibole</h1>
+                        <h1 className='font-semibold text-md text-blue-950/80'>{loggedUser?.name?.split(' ')[0]}</h1>
                         <p className='text-[10px] text-gray-950/80'>dikshitjtibole@gmail.com</p>
                         <Link to={'/profile'} className='bg-blue-200/90 shadow-2xl w-fit px-2 cursor-pointer rounded-4xl flex gap-0.5 items-center text-sm py-0.5 mt-1'>
                             <p className='font-semibold text-sm pb-0.5'>profile</p>

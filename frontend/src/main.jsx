@@ -3,8 +3,8 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 import { BrowserRouter, Routes, Route } from 'react-router';
-import Signup from './pages/signup'
-import Login from './pages/login'
+import Signup from './pages/Signup.jsx'
+
 import Dashboard from './pages/Dashboard.jsx';
 import MainLayout from './pages/MainLayout.jsx';
 import AddExpense from './pages/AddExpense.jsx';
@@ -13,6 +13,7 @@ import Categories from './pages/Categories.jsx';
 import MonthlyBudget from './pages/MonthlyBudget.jsx';
 import { Provider } from 'react-redux'
 import store from './stores/store.js';
+import Login from './pages/login.jsx';
 
 createRoot(document.getElementById('root')).render(
   <Provider store={store}>
@@ -35,6 +36,6 @@ createRoot(document.getElementById('root')).render(
 
         </Route>
       </Routes>
-    </BrowserRouter>,
+    </BrowserRouter>
   </Provider>
 )

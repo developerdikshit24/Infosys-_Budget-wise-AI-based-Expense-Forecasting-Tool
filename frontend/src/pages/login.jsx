@@ -1,22 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from 'react-hook-form';
 import { Eye, EyeOff } from "lucide-react";
 import Design from '../components/Design.jsx'
-import { Link } from "react-router";
-import { axiosInstance } from "../connection/axios.js";
+import { Link, useNavigate } from "react-router";
+import { useDispatch, useSelector } from 'react-redux'
+import { loginUserThunk } from "../stores/auth.js";
 const Login = () => {
-
+    const navigate = useNavigate()
+    const dispatch = useDispatch();
+    const { loggedUser } = useSelector(state => state.authentication)
     const { register, handleSubmit, reset, formState: { errors } } = useForm({ mode: 'onBlur' })
     const [showPassword, setShowPassword] = useState(false);
 
 
     const onSubmit = async (data) => {
-        console.log(data);
-        const res = await axiosInstance.post('/users/login', data);
-        console.log(res);
-        reset()
+        dispatch(loginUserThunk(data))
     };
 
+    useEffect(() => {
+        if (loggedUser) {
+            console.log(loggedUser);
+            
+            navigate('/')
+            reset()
+        }
+    }, [loggedUser])
 
     return (
         <div className="min-h-screen flex bg-gray-100 relative">

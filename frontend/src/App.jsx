@@ -2,6 +2,7 @@ import { useState } from 'react'
 import './App.css'
 
 import { Outlet } from 'react-router'
+import { ToastContainer } from 'react-toastify'
 function App() {
 
   return (
@@ -10,6 +11,17 @@ function App() {
         <div className="absolute -top-40 -left-40 w-[700px] h-[700px] bg-white/40 rounded-full blur-[160px]"></div>
         <div className="absolute bottom-[-200px] right-[-150px] w-[600px] h-[600px] bg-white/30 rounded-full blur-[180px]"></div>
         <Outlet />
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
       </div>
     </div>
   )

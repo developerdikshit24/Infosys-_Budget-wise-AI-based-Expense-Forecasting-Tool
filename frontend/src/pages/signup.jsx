@@ -1,26 +1,38 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import { axiosInstance } from "../connection/axios.js";
 import { useForm } from 'react-hook-form';
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { registerUserThunk } from '../stores/auth.js'
+import { useDispatch, useSelector } from "react-redux";
+import Desgin from "../components/Design.jsx";
+
 
 const Signup = () => {
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const { loggedUser } = useSelector(state => state.authentication)
     const { handleSubmit, reset, register, formState: { errors } } = useForm({ mode: 'onBlur' });
     const [showPassword, setShowPassword] = useState(false);
 
 
-    const onSubmit = async (data) => {
-        console.log(data);
-        await axiosInstance.post('/users/register', data).then((res) => {
-            console.log(res);
-        })
-        
+    const onSubmit = async (data) => { 
+        dispatch(registerUserThunk(data))
         reset()
     };
+
+
+    useEffect(() => {
+        if (loggedUser) {
+            navigate('/')
+            reset()
+        }
+    }, [loggedUser])
+    
 
     return (
         <div className="min-h-screen flex bg-gray-100 relative">
             {/* LEFT SIDE */}
+            <Desgin/>
             <div className="hidden md:flex w-1/2 text-white items-center justify-center ">
                 <div className="z-50 ">
                     <div className="flex gap-2 mb-10">
@@ -45,12 +57,12 @@ const Signup = () => {
                     onSubmit={handleSubmit(onSubmit)}
                     className="flex flex-col gap-3 bg-white/70 p-8 z-100 w-md rounded-2xl shadow-lg"
                 >
-                <div className="flex gap-3 items-center mb-4 ">
-                    <div className="w-1 h-8 bg-violet-800 rounded-full">
+                    <div className="flex gap-3 items-center mb-4 ">
+                        <div className="w-1 h-8 bg-violet-800 rounded-full">
 
+                        </div>
+                        <div className="text-3xl font-bold font-sans mb-1">Sign up</div>
                     </div>
-                    <div className="text-3xl font-bold font-sans mb-1">Sign up</div>
-                </div>
 
                     {/* Full Name */}
                     <label className="font-semibold text-gray-800">Full Name</label>
@@ -77,7 +89,8 @@ const Signup = () => {
                                 required: "Email is Required*", pattern: {
                                     value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
                                     message: "Enter a valid email address"
-                                } })}
+                                }
+                            })}
                             name="email"
                             type="email"
                             placeholder="Enter your Email"

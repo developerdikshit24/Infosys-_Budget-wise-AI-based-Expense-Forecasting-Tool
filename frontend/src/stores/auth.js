@@ -7,12 +7,20 @@ import { axiosInstance } from "../connection/axios.js";
 export const registerUserThunk = createAsyncThunk('auth/registerUser', async (data, { dispatch, rejectedWithValue }) => {
     try {
         const res = await axiosInstance.post('/users/register', data)
-        toast.success("Welcome", res.data.name)
+        toast.success("Welcome ", res.data.name)
+        
         return res.data
     } catch (error) {
         toast.error(extractErrorMessage(error.response.data || "Internal Server Error!"))
         return rejectedWithValue(error.response.data || "Internal Server Error !")
     }
+})
+
+export const loginUserThunk = createAsyncThunk('auth/loginUser', async (data, { dispatch, rejectedWithValue }) => {
+    const res = await axiosInstance.post('/users/login', data);
+    toast.success(`Welcome Back ${res.data.data.name}`)
+    console.log(res.data.data);
+    return res.data.data
 })
 
 
@@ -42,9 +50,19 @@ const authSlice = createSlice({
             .addCase(registerUserThunk.rejected, (state) => {
                 state.isAuthenticating = false
             })
+            .addCase(loginUserThunk.pending, (state, action) => {
+                state.isAuthenticating = true;
+            })
+            .addCase(loginUserThunk.fulfilled, (state, action) => {
+                state.loggedUser = action.payload
+                state.isAuthenticating = false;
+            })
+            .addCase(loginUserThunk.rejected, (state) => {
+                state.isAuthenticating = false;
+            })
     }
 })
 
-export const{ addCase } =  authSlice.actions
+export const { addCase } = authSlice.actions
 
 export default authSlice.reducer
