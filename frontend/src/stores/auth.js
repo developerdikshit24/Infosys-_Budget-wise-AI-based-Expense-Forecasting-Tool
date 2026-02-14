@@ -2,32 +2,70 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { toast } from 'react-toastify';
 import { extractErrorMessage } from '../constant.js'
 import { axiosInstance } from "../connection/axios.js";
+import { getExpenseCatgoryThunk } from "./expense.js";
 
 
-export const registerUserThunk = createAsyncThunk('auth/registerUser', async (data, { dispatch, rejectedWithValue }) => {
+export const getCurrentUserThunk = createAsyncThunk('auth/getCurrentUser', async (_, { dispatch, rejectWithValue }) => {
     try {
-        const res = await axiosInstance.post('/users/register', data)
-        toast.success("Welcome ", res.data.name)
-        
-        return res.data
+        const res = await axiosInstance.get('/users/get-user');
+        return res.data.data
     } catch (error) {
         toast.error(extractErrorMessage(error.response.data || "Internal Server Error!"))
-        return rejectedWithValue(error.response.data || "Internal Server Error !")
+        return rejectWithValue(error.response.data || "Internal Server Error !")
     }
 })
 
-export const loginUserThunk = createAsyncThunk('auth/loginUser', async (data, { dispatch, rejectedWithValue }) => {
-    const res = await axiosInstance.post('/users/login', data);
-    toast.success(`Welcome Back ${res.data.data.name}`)
-    console.log(res.data.data);
-    return res.data.data
+export const registerUserThunk = createAsyncThunk('auth/registerUser', async (data, { dispatch, rejectWithValue }) => {
+    try {
+        const res = await axiosInstance.post('/users/register', data)
+        toast.success("Welcome ", res.data.name)
+
+        return res.data
+    } catch (error) {
+        toast.error(extractErrorMessage(error.response.data || "Internal Server Error!"))
+        return rejectWithValue(error.response.data || "Internal Server Error !")
+    }
+})
+
+export const loginUserThunk = createAsyncThunk('auth/loginUser', async (data, { dispatch, rejectWithValue }) => {
+    try {
+        const res = await axiosInstance.post('/users/login', data);
+        dispatch(getExpenseCatgoryThunk())
+        toast.success(`Welcome Back ${res.data.data.name}`)
+        return res.data.data
+    } catch (error) {
+        toast.error(extractErrorMessage(error.response.data || "Internal Server Error!"))
+        return rejectWithValue(error.response.data || "Internal Server Error !")
+    }
+})
+
+export const logoutUserThunk = createAsyncThunk('auth/logout', async (req, res) => {
+    try {
+        const res = await axiosInstance.get('/users/logout');
+        return res
+    } catch (error) {
+        toast.error(extractErrorMessage(error.response.data || "Internal Server Error!"))
+        return rejectWithValue(error.response.data || "Internal Server Error !")
+    }
+})
+
+export const setMonthlyLimitThunk = createAsyncThunk('auth/setMonthlyLimit', async (data, { dispatch, rejectWithValue }) => {
+    try {
+        
+        const res = await axiosInstance.post('/users/set-monthlyLimit', data)
+        toast.success(res.data.message);
+        return res.data.data
+
+    } catch (error) {
+        toast.error(extractErrorMessage(error.response.data || "Internal Server Error!"))
+        return rejectWithValue(error.response.data || "Internal Server Error !")
+    }
 })
 
 
 const InitialStage = {
     loggedUser: null,
-    isAuthenticating: false
-
+    isAuthenticating: false,
 }
 
 const authSlice = createSlice({
@@ -40,6 +78,16 @@ const authSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
+            .addCase(getCurrentUserThunk.pending, (state) => {
+                state.isAuthenticating = true
+            })
+            .addCase(getCurrentUserThunk.fulfilled, (state, action) => {
+                state.loggedUser = action.payload
+                state.isAuthenticating = false
+            })
+            .addCase(getCurrentUserThunk.rejected, (state) => {
+                state.isAuthenticating = false
+            })
             .addCase(registerUserThunk.pending, (state) => {
                 state.isAuthenticating = true
             })
@@ -60,6 +108,27 @@ const authSlice = createSlice({
             .addCase(loginUserThunk.rejected, (state) => {
                 state.isAuthenticating = false;
             })
+            .addCase(logoutUserThunk.pending, (state) => {
+                state.isAuthenticating = true
+            })
+            .addCase(logoutUserThunk.fulfilled, (state) => {
+                state.loggedUser = null
+                state.isAuthenticating = false
+            })
+            .addCase(logoutUserThunk.rejected, (state) => {
+                state.isAuthenticating = false
+            })
+            .addCase(setMonthlyLimitThunk.pending, (state) => {
+                state.isAuthenticating = true
+            })
+            .addCase(setMonthlyLimitThunk.fulfilled, (state, action) => {
+                state.loggedUser = action.payload[0]
+                state.isAuthenticating = false
+            })
+            .addCase(setMonthlyLimitThunk.rejected, (state) => {
+                state.isAuthenticating = false
+            })
+
     }
 })
 

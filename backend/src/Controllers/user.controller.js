@@ -6,6 +6,13 @@ import { validationResult } from 'express-validator';
 import db from '../config/db.js';
 import jwt from 'jsonwebtoken';
 
+
+const getCurrentUser = asyncHandler(async (req, res) => {
+    return res.status(200)
+        .json(new ApiResponse(200, req.user, "Current user fetch sucessfully"))
+}
+)
+
 const registerUser = asyncHandler(async (req, res) => {
     const error = validationResult(req)
 
@@ -42,12 +49,11 @@ const registerUser = asyncHandler(async (req, res) => {
 
     } catch (error) {
         return res.status(500).json(
-            new ApiError(500, "Server error")
+            new ApiError(500, error)
         );
     }
 
 })
-
 
 
 const loginUser = asyncHandler(async (req, res) => {
@@ -86,12 +92,73 @@ const loginUser = asyncHandler(async (req, res) => {
         sameSite: "strict",
         maxAge: 24 * 60 * 60 * 1000
     });
-    res.status(201).json(new ApiResponse(200, { id: user.id, name: user.name, email: user.email }, 'Login successful!'))
+    res.status(201)
+        .json(new ApiResponse(200,
+            {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                monthly_limit: user.monthly_limit
+            }, 'Login successful!'))
 
 }
 )
 
+
+const logoutUser = asyncHandler(async (req, res) => {
+
+    if (!req.user) {
+        return res.status(401).json(new ApiError(401, "Unauthorized Access"))
+    }
+
+    const option = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 24 * 60 * 60 * 1000
+    }
+
+    return res
+        .status(200)
+        .clearCookie('token', option)
+        .json(new ApiResponse(200, {}, "Loggout Successfully!"))
+})
+
+const updateMonthlyLimit = asyncHandler(async (req, res) => {
+
+    try {
+        const Error = validationResult(req);
+        if (!Error.isEmpty()) {
+            return res.status(404).json(new ApiError(404, Error.array()))
+        }
+    
+        const userId = req.user.id;
+    
+        const { monthly_limit_amount } = req.body;
+        
+        const [result] = await db.query(
+            "UPDATE users SET monthly_limit = ? WHERE id = ?",
+            [monthly_limit_amount, userId]
+        );
+        
+        if (result.length === 0) return res.status(500).json(new ApiError(500, "Internal Server Error"));
+        const [user] = await db.query(
+            `Select id, name, email, monthly_limit FROM users WHERE id = ?`, [userId]
+        )
+        
+        return res.status(201).json(new ApiResponse(200, user, "Limit set successfully"))
+    } catch (error) {
+        return res.status(500).json(
+            new ApiError(500, error)
+        );
+    }
+
+})
+
 export {
+    getCurrentUser,
     registerUser,
-    loginUser
+    loginUser,
+    logoutUser,
+    updateMonthlyLimit
 }

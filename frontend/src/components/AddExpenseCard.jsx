@@ -1,17 +1,48 @@
 import React from 'react'
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { addExpenseThunk, getExpenseCatgoryThunk } from '../stores/expense'
+import { useForm } from 'react-hook-form'
 
 const AddExpenseCard = () => {
+    const { handleSubmit, register, reset, formState: { errors } } = useForm({ mode: 'all' })
+    const { expenseCatgories } = useSelector(state => state.expense)
+    const { loggedUser } = useSelector(state => state.authentication)
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(getExpenseCatgoryThunk())
+    }, [])
+
+    const onSubmit = (data) => {
+        const values = {
+            user_id: loggedUser.id,
+            category_id: Number(data.category_id),
+            amount: Number(data.amount),
+            description: data.description,
+            expense_date: data.expense_date
+        }
+        dispatch(addExpenseThunk(values))
+    }
+
     return (
         <div className='bg-gray-100/80 w-3/4 backdrop-filter backdrop-blur rounded-md shadow-lg'>
             <h1 className='text-2xl font-semibold w-full px-4 pt-5 text-blue-950'>Add Expense</h1>
             {/* Add Expense */}
-            <div className="px-4 py-2">
+            <form onSubmit={handleSubmit(onSubmit)} className="px-4 py-2">
                 <label className="block mb-2 py-1 font-medium">Amount</label>
                 <div className="relative">
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-lg font-semibold">
                         ₹
                     </span>
                     <input
+                        {...register('amount', {
+                            required: "Amount is Required",
+                            pattern: {
+                                value: /^[0-9\b]+$/,
+                                message: 'Only numerical value required'
+                            }
+                        })}
                         type="text"
                         inputMode='numeric'
                         placeholder="0"
@@ -19,6 +50,12 @@ const AddExpenseCard = () => {
                     />
 
                 </div>
+                {errors.amount && (
+                    <p className="text-red-500 text-sm">
+                        {errors.amount.message}
+                    </p>
+                )}
+
                 {/* Add Category */}
                 <label className="block mb-2 mt-1 py-1 font-medium">Category</label>
                 <div className="relative group">
@@ -30,16 +67,18 @@ const AddExpenseCard = () => {
                     <select
                         className="appearance-none bg-white   backdrop-blur-md w-full pl-11 pr-12 py-3  rounded-xl shadow-md  outline-none  focus:border-blue-500 focus:ring-2 focus:ring-blue-800/40 text-gray-700 font-semibold transition-all duration-200 group-hover:shadow-lg cursor-pointer"
                         defaultValue=""
+                        {...register('category_id', {
+                            required: {
+                                value: true,
+                                message: "Expense Category required"
+                            }
+                        })}
                     >
+
                         <option value="" disabled>Select Category</option>
-                        <option value={'Food'}>Food</option>
-                        <option value={'Travel'}>Travel</option>
-                        <option value={'Shopping'}>Shopping</option>
-                        <option value={'Health'}>Health</option>
-                        <option value={'Entertainment'}>Entertainment</option>
-                        <option value={'Bills'}>Bills</option>
-                        <option value={'Education'}>Education</option>
-                        <option value={'Others'}>Others</option>
+                        {expenseCatgories.map((exp, index) => (
+                            <option key={index} value={exp.id}>{exp.category_name}</option>
+                        ))}
                     </select>
 
                     {/* Custom Arrow */}
@@ -55,27 +94,46 @@ const AddExpenseCard = () => {
                         </svg>
                     </span>
                 </div>
+                {errors.category_id && (
+                    <p className="text-red-500 text-sm">
+                        {errors.category_id.message}
+                    </p>
+                )}
+
                 {/* Select Date */}
                 <label className="block mb-2 mt-1 py-1 font-medium">Date</label>
                 <div className="relative">
                     <input
+                        {...register('expense_date', {
+                            required: {
+                                value: true,
+                                message:"Expense date required"
+                            }
+                        })}
                         type="date"
                         className="bg-white w-full pl-4 pr-4 py-3 rounded-xl shadow-md outline-none focus:ring-2 focus:ring-blue-800/70 text-lg font-semibold"
                     />
                 </div>
+                {errors.expense_date && (
+                    <p className="text-red-500 text-sm">
+                        {errors.expense_date.message}
+                    </p>
+                )}
+
                 <label className="block mb-2 mt-1 py-1 font-medium">Add Note (Optional)</label>
                 <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-lg font-semibold">
                         <img className='w-5 opacity-70' src="./note.png" alt="add-note" />
                     </span>
                     <input
+                        {...register('description')}
                         type="text"
                         placeholder="Add your note (optional)"
                         className="bg-white w-full pl-10 pr-4 py-3 rounded-xl shadow-md outline-none focus:ring-2 focus:ring-blue-800/70 text-lg font-semibold"
                     />
                 </div>
-                <button className='w-full p-2 mt-4 mb-1 text-lg text-white font-semibold rounded-lg shadow-lg cursor-pointer bg-blue-900 hover:bg-blue-950'>Save Expense</button>
-            </div>
+                <button type='submit' className='w-full p-2 mt-4 mb-1 text-lg text-white font-semibold rounded-lg shadow-lg cursor-pointer bg-blue-900 hover:bg-blue-950'>Save Expense</button>
+            </form>
         </div>
     )
 }

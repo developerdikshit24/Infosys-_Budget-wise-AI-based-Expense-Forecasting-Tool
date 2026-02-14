@@ -9,7 +9,7 @@ const Login = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch();
     const { loggedUser } = useSelector(state => state.authentication)
-    const { register, handleSubmit, reset, formState: { errors } } = useForm({ mode: 'onBlur' })
+    const { register, handleSubmit, reset, formState: { errors } } = useForm({ mode: 'all' })
     const [showPassword, setShowPassword] = useState(false);
 
 
@@ -19,8 +19,6 @@ const Login = () => {
 
     useEffect(() => {
         if (loggedUser) {
-            console.log(loggedUser);
-            
             navigate('/')
             reset()
         }

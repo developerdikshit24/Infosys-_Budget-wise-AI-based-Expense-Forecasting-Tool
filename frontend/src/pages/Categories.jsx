@@ -1,8 +1,9 @@
 import React from 'react'
 import { Trash2, Pencil, IndianRupee, CirclePlus } from 'lucide-react'
+import { useSelector } from 'react-redux';
 
 const Categories = () => {
-
+    const { expenseCatgories } = useSelector(state=> state.expense)
     const categories = [
         { category: "Food", amount: 12000 },
         { category: "Entertainment", amount: 10000 },
@@ -47,16 +48,16 @@ const Categories = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {categories.map((exp, index) => (
+                                {expenseCatgories.map((exp, index) => (
                                     <tr
                                         key={index}
                                         className="border-b hover:bg-blue-50 transition duration-200"
                                     >
-                                        <td className="py-3 text-left pl-2 font-semibold px-0.5"> {index + 1}{". "} {exp.category}</td>
+                                        <td className="py-3 text-left pl-2 font-semibold px-0.5"> {index + 1}{". "} {exp.category_name}</td>
                                         <td className="py-3 text-left">
                                             <div className='flex gap-1'>
                                                 {<IndianRupee className='w-4' />}
-                                                {exp.amount.toLocaleString()}
+                                                {Date.now(exp?.created_at)}
                                             </div>
                                         </td>
                                         <td className="py-3 text-center font-semibold ">

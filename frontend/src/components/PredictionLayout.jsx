@@ -1,13 +1,23 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router';
+import { getRecentExpenseThunk } from '../stores/expense';
+import { formatDate } from '../constant';
 
 const PredictionLayout = () => {
+    const dispatch = useDispatch()
+    const { loggedUser } = useSelector(state => state.authentication)
+    
+    const { recentExenses } = useSelector(state=> state.expense)
     const expenses = [
         { date: "12-01", title: "Zomato", category: "Food", amount: 601 },
         { date: "13-01", title: "Uber", category: "Travel", amount: 260 },
         { date: "14-01", title: "Amazon", category: "Shopping", amount: 360 },
         { date: "16-01", title: "Restaurant", category: "Food", amount: 1000 },
     ];
+    useEffect(() => {
+        dispatch(getRecentExpenseThunk({ userId: loggedUser?.id }))
+    },[loggedUser])
 
     return (
         <div className='w-1/5 mt-1 '>
@@ -41,7 +51,6 @@ const PredictionLayout = () => {
                                 <thead>
                                     <tr className="border-b text-blue-900 text-xs">
                                         <th className="py-3 pr-2">Date</th>
-                                        <th className="py-3">Title</th>
                                         <th className="py-3 pr-2">Category</th>
                                         <th className="py-3 text-right">Amount</th>
                                     </tr>
@@ -49,14 +58,13 @@ const PredictionLayout = () => {
 
                                 {/* Body */}
                                 <tbody>
-                                    {expenses.map((exp, index) => (
+                                    {recentExenses.map((exp, index) => (
                                         <tr
                                             key={index}
                                             className="border-b hover:bg-blue-50 transition duration-200"
                                         >
-                                            <td className="py-3 text-[10px] px-0.5 text-blue-950/80 font-semibold" >{exp.date}</td>
-                                            <td className="py-3 font-semibold px-0.5 text-xs">{exp.title}</td>
-                                            <td className="py-3 text-xs">{exp.category}</td>
+                                            <td className="py-3 text-[10px] px-0.5 text-blue-950/80 font-semibold" >{formatDate(exp.expense_date)}</td>
+                                            <td className="py-3 text-xs">{exp?.category_name}</td>
                                             <td className="py-3 text-xs text-right font-bold text-red-600">
                                                 ₹{exp.amount.toLocaleString()}
                                             </td>

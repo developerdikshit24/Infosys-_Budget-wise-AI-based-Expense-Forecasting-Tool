@@ -1,10 +1,19 @@
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import BottomToolTip from "./BottomToolTip";
+import { useDispatch } from "react-redux";
+import { logoutUserThunk } from "../stores/auth";
 
 export default function NavDropdown() {
   const [open, setOpen] = useState(false);
-
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  
+  const handleClick = () => {
+          dispatch(logoutUserThunk())
+          navigate('/login')
+      }
+  
   return (
     <div className="relative inline-block z-50 group text-left">
       {/* Button */}
@@ -48,11 +57,11 @@ export default function NavDropdown() {
             </Link>
 
 
-            <Link to={'/login'}>
+            <button onClick={handleClick} type="button" className="w-full">
               <li className="px-4 py-2 hover:bg-red-600 hover:text-white hover:font-bold ease-in-out duration-300 cursor-pointer">
                 Logout
               </li>
-            </Link>
+            </button>
 
           </ul>
         </div>

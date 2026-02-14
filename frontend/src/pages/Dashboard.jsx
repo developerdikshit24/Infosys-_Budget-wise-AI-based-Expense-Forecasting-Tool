@@ -34,7 +34,7 @@ const Dashboard = () => {
                         <div className="w-1 h-5 bg-amber-600 rounded-full"></div>
                         <h1 className='text-lg text-blue-950 font-semibold'>Monthly Budget</h1>
                     </div>
-                    <p className='text-2xl p-2 px-3 font-semibold text-orange-700'>₹ 21,300 /-</p>
+                    <p className='text-2xl p-2 px-3 font-semibold text-orange-700'>{`₹ ${loggedUser?.monthly_limit} /-`}</p>
                     <p className='px-2 text-sm text-black/80 font-semibold'><span className='font-semibold text-amber-600'>12%</span> more than last month </p>
                 </div>
                 <div className='bg-gray-100/80 p-2 w-1/4 backdrop-filter backdrop-blur rounded-lg shadow-lg'>

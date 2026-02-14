@@ -14,29 +14,33 @@ import MonthlyBudget from './pages/MonthlyBudget.jsx';
 import { Provider } from 'react-redux'
 import store from './stores/store.js';
 import Login from './pages/Login.jsx';
+import AuthLoader from './components/AuthLoader.jsx';
 
 
 createRoot(document.getElementById('root')).render(
   <Provider store={store}>
-    <BrowserRouter>
-      <Routes>
-        <Route path='/' element={<App />}>
-          <Route path='' element={<MainLayout />}>
+    <AuthLoader>
 
-            {/* Right Layout Structure */}
-            <Route path='' element={<RightLayout />}>
-              <Route path='' element={<Dashboard />} />
-              <Route path='/add-expense' element={<AddExpense />} />
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={<App />}>
+            <Route path='' element={<MainLayout />}>
+
+              {/* Right Layout Structure */}
+              <Route path='' element={<RightLayout />}>
+                <Route path='' element={<Dashboard />} />
+                <Route path='/add-expense' element={<AddExpense />} />
+              </Route>
+              <Route path='/categories' element={<Categories />} />
+              <Route path='/monthly-budget' element={<MonthlyBudget />} />
             </Route>
-            <Route path='/categories' element={<Categories />} />
-            <Route path='/monthly-budget' element={<MonthlyBudget />} />
+
+            <Route path='/login' element={<Login />} />
+            <Route path='/signup' element={<Signup />} />
+
           </Route>
-
-          <Route path='/login' element={<Login />} />
-          <Route path='/signup' element={<Signup />} />
-
-        </Route>
-      </Routes>
-    </BrowserRouter>
+        </Routes>
+      </BrowserRouter>
+    </AuthLoader>
   </Provider>
 )

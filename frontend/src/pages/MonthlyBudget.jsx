@@ -1,12 +1,26 @@
 import { CirclePlus } from 'lucide-react'
 import React, { useState } from 'react'
 import BudgetSlider from '../components/BudgetSlider';
+import { useDispatch, useSelector } from 'react-redux';
+import { setMonthlyLimitThunk } from '../stores/auth';
+import { toast } from 'react-toastify';
 
 const MonthlyBudget = () => {
     const min = 1000;
     const max = 50000;
-    const [value, setValue] = useState(10000);
+    const [value, setValue] = useState(0);
     const percentage = ((value - min) / (max - min)) * 100;
+    const dispatch = useDispatch()
+    const { loggedUser } = useSelector(state => state.authentication);
+
+    const handleClick = () => {
+        if (value > 1000) {
+            dispatch(setMonthlyLimitThunk({ monthly_limit_amount: value }))
+        } else {
+            toast.info("Enter vaild amount")
+        }
+    }
+
     return (
         <div className='w-[85%] h-full flex justify-center items-center'>
             <div className="bg-gray-100/80 backdrop-filter backdrop-blur rounded-lg w-11/12 shadow-lg p-4">
@@ -16,10 +30,10 @@ const MonthlyBudget = () => {
                         <h1 className='text-2xl font-semibold text-blue-900'>Set Monthly Limit</h1>
                     </div>
                     <p className='text-sm font-semibold text-black/70 pl-7'>Plan and Set Your Monthly Limit</p>
+                    {/* Input Monthly Limit */}
                     <div className='p-4'>
                         <div className='overflow-hidden p-4'>
-                            
-                                <h1 className='text-lg py-2 font-semibold text-blue-950'>Monthly Budget Amount</h1>
+                            <h1 className='text-lg py-2 font-semibold text-blue-950'>Monthly Budget Amount</h1>
                             <div className="relative">
                                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-lg font-semibold">
                                     ₹
@@ -69,6 +83,22 @@ const MonthlyBudget = () => {
 
                             </div>
                         </div>
+                    </div>
+
+                    {/* Current Monthly Limit */}
+                    <div className='w-full flex justify-center'>
+                        <div className='bg-gray-100/80 backdrop-filter justify-between flex backdrop-blur rounded-lg w-11/12 shadow-lg py-4 px-8'>
+                            <div className='flex gap-2 items-center'>
+                                <div className="w-1 h-5 bg-red-700 rounded-full"></div>
+                                <h1 className='text-md font-semibold text-blue-900'>Current Montly Limit</h1>
+                            </div>
+                            <p className='text-md font-semibold text-green-600'>₹ {loggedUser?.monthly_limit }</p>
+                        </div>
+                    </div>
+
+                    {/* Update Monthly Limit */}
+                    <div className='w-full flex justify-end p-4'>
+                        <button type='button' onClick={handleClick} className='px-2 py-1.5 bg-[#f59e0b] w-1/12 text-white font-bold rounded-md'>Update</button>
                     </div>
                 </div>
             </div>
