@@ -14,6 +14,8 @@ const NavigationOption = () => {
         dispatch(logoutUserThunk())
         navigate('/login')
     }
+    console.log();
+    
 
     // Menu Items
     const menuItems = [
@@ -61,7 +63,7 @@ const NavigationOption = () => {
                 <div className='flex gap-4  items-center'>
                     <img className='w-12 h-12' src="./user.png" alt="user" />
                     <div className="flex flex-col">
-                        <h1 className='font-semibold text-md text-blue-950/80'>{loggedUser?.name?.split(' ')[0]}</h1>
+                        <h1 className='font-semibold text-md text-blue-950/80'>{loggedUser?.name?.split(' ')[0]} {loggedUser?.name?.split(' ')[loggedUser?.name?.split(' ').length - 1]}</h1>
                         <p className='text-[10px] text-gray-950/80'>{loggedUser?.email}</p>
                         <Link to={'/profile'} className='bg-blue-200/90 shadow-2xl w-fit px-2 cursor-pointer rounded-4xl flex gap-0.5 items-center text-sm py-0.5 mt-1'>
                             <p className='font-semibold text-sm pb-0.5'>profile</p>

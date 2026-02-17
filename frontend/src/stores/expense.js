@@ -19,6 +19,7 @@ export const addExpenseThunk = createAsyncThunk('expense/addExpense', async (dat
     try {
         const res = await axiosInstance.post('/expense/add-expense', data)
         dispatch(getRecentExpenseThunk())
+        dispatch(getDashboardDataThunk())
         toast.success(res.data.message);
         return res.data.data
     } catch (error) {
@@ -39,11 +40,38 @@ export const getRecentExpenseThunk = createAsyncThunk('expense/getRecentExpense'
     }
 })
 
+export const getDashboardDataThunk = createAsyncThunk('expense/getDashboardData', async (_, {dispatch, rejectWithValue}) => {
+    try {
+        const res = await axiosInstance.get('/expense/get-dashData')
+       
+        return res.data.data
+        
+    } catch (error) {
+        toast.error(extractErrorMessage(error.response.data || "Internal Server Error!"))
+        return rejectWithValue(error.response.data || "Internal Server Error !")
+        
+    }
+})
+
+export const getCategoryTotalExpenseThunk = createAsyncThunk('expense/get-categoryExpense', async (_,{dispatch, rejectWithValue}) => {
+    try {
+        const res = await axiosInstance.get('/expense/get-categoryExpense');
+        return res.data.data
+        
+    } catch (error) {
+        toast.error(extractErrorMessage(error.response.data || "Internal Server Error!"))
+        return rejectWithValue(error.response.data || "Internal Server Error !")
+    }
+})
+
 
 const InitialStage = {
     isFetching: false,
     expenseCatgories: [],
-    recentExenses:[],
+    recentExenses: [],
+    isFetching: false,
+    dashboardData: null,
+    categoryExpenseTotal:null
 
 }
 
@@ -71,6 +99,26 @@ const expenseSlice = createSlice({
                 state.isFetching = false
             })
             .addCase(getRecentExpenseThunk.rejected, (state) => {
+                state.isFetching = false
+            })
+            .addCase(getDashboardDataThunk.pending, (state) => {
+                state.isFetching = true;
+            })
+            .addCase(getDashboardDataThunk.fulfilled, (state, action) => {
+                state.dashboardData = action.payload
+                state.isFetching = false
+            })
+            .addCase(getDashboardDataThunk.rejected, (state) => {
+                state.isFetching = false
+            })
+            .addCase(getCategoryTotalExpenseThunk.pending, (state) => {
+                state.isFetching = true
+            })
+            .addCase(getCategoryTotalExpenseThunk.fulfilled, (state, action) => {
+                state.categoryExpenseTotal = action.payload
+                state.isFetching = false
+            })
+            .addCase(getCategoryTotalExpenseThunk.rejected, (state) => {
                 state.isFetching = false
             })
 

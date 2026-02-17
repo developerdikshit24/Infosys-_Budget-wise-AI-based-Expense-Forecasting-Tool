@@ -1,14 +1,6 @@
 import { useSelector } from "react-redux";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 
-const data = [
-    { name: "Food", value: 601 },
-    { name: "Travel", value: 260 },
-    { name: "Shopping", value: 360 },
-    { name: "Grosary", value: 1000 },
-    { name: "Bills", value: 1000 },
-];
-
 const COLORS = [
     "#6366F1", 
     "#EF4444", 
@@ -44,12 +36,11 @@ const COLORS = [
 
 
 export default function CategoryChart() {
-    const { recentExenses } = useSelector(state => state.expense)
-    const formattedExpenses = recentExenses.map(exp => ({
+    const { categoryExpenseTotal } = useSelector(state => state.expense)
+    const formattedExpenses = categoryExpenseTotal?.map(exp => ({
         ...exp,
-        amount: Number(exp.amount)
+        total: Number(exp.total)
     }));
-
     
     return (
         <div className="w-full h-80">
@@ -60,10 +51,10 @@ export default function CategoryChart() {
                         innerRadius={80}
                         outerRadius={140}
                         paddingAngle={5}
-                        dataKey="amount"
-                        nameKey="category_name"
+                        dataKey="total"
+                        nameKey="category"
                     >
-                        {formattedExpenses.map((entry, index) => (
+                        {formattedExpenses?.map((entry, index) => (
                             <Cell key={index} fill={COLORS[index % COLORS.length]} />
                         ))}
                     </Pie>

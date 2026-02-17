@@ -16,7 +16,7 @@ const AuthLoader = ({ children }) => {
 
     if (isAuthenticating) {
         return <div className='w-full h-svh bg-base-100 dark:bg-base-300 flex items-center justify-center'>
-            <p className={`select-none text-6xl`}>Welcome To PlaySync</p>
+            <p className={`select-none text-6xl`}>Welcome To BudgetWise</p>
         </div>;
     }
 

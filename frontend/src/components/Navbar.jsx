@@ -1,6 +1,6 @@
-import React from 'react'
 import NavDropDown from './NavDropDown.jsx'
 import BottomToolTip from './BottomToolTip.jsx'
+import { Link } from 'react-router'
 const Navbar = () => {
     return (
         <div className='w-full h-20 bg-amer-500 flex items-center z-50 sticky top-0 justify-center'>
@@ -18,13 +18,13 @@ const Navbar = () => {
                     <div className="relative group inline-block">
 
                         {/* Button */}
-                        <button type="button" className="p-1">
+                        <Link to={'./add-expense'} className="p-1">
                             <img
                                 src="./Add Expense.png"
                                 className="w-10"
                                 alt="Add Expense"
                             />
-                        </button>
+                        </Link>
 
                         {/* Tooltip*/}
                         <BottomToolTip value={'Add Expense'} />

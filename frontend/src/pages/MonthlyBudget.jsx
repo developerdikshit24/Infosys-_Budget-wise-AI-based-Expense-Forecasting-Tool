@@ -1,6 +1,4 @@
-import { CirclePlus } from 'lucide-react'
 import React, { useState } from 'react'
-import BudgetSlider from '../components/BudgetSlider';
 import { useDispatch, useSelector } from 'react-redux';
 import { setMonthlyLimitThunk } from '../stores/auth';
 import { toast } from 'react-toastify';
@@ -12,9 +10,12 @@ const MonthlyBudget = () => {
     const percentage = ((value - min) / (max - min)) * 100;
     const dispatch = useDispatch()
     const { loggedUser } = useSelector(state => state.authentication);
+    const { dashboardData  } = useSelector(state => state.expense);
+
+
 
     const handleClick = () => {
-        if (value > 1000) {
+        if (value >= 1000) {
             dispatch(setMonthlyLimitThunk({ monthly_limit_amount: value }))
         } else {
             toast.info("Enter vaild amount")
@@ -26,6 +27,7 @@ const MonthlyBudget = () => {
             <div className="bg-gray-100/80 backdrop-filter backdrop-blur rounded-lg w-11/12 shadow-lg p-4">
                 <div id='Title' >
                     <div className='flex gap-2 items-center'>
+                        
                         <img src="./Monthly Budget.png" className='w-5 pt-1' alt="categories" />
                         <h1 className='text-2xl font-semibold text-blue-900'>Set Monthly Limit</h1>
                     </div>
@@ -43,7 +45,7 @@ const MonthlyBudget = () => {
                                     inputMode="numeric"
                                     value={value}
                                     onChange={(e) => {
-                                        const v = e.target.value.replace(/\D/g, ""); // allow only digits
+                                        const v = e.target.value.replace(/\D/g, "");
                                         setValue(v);
                                     }}
                                     placeholder="0"
@@ -86,13 +88,27 @@ const MonthlyBudget = () => {
                     </div>
 
                     {/* Current Monthly Limit */}
-                    <div className='w-full flex justify-center'>
-                        <div className='bg-gray-100/80 backdrop-filter justify-between flex backdrop-blur rounded-lg w-11/12 shadow-lg py-4 px-8'>
+                    <div className='w-full flex flex-col gap-y-4 justify-center  content-around flex-wrap'>
+                        <div className='bg-gray-100/80 backdrop-filter justify-between flex backdrop-blur rounded-lg w-11/12 shadow-lg py-2 px-8'>
                             <div className='flex gap-2 items-center'>
                                 <div className="w-1 h-5 bg-red-700 rounded-full"></div>
-                                <h1 className='text-md font-semibold text-blue-900'>Current Montly Limit</h1>
+                                <h1 className='text-md font-semibold text-blue-900'>Current Monthly Limit</h1>
                             </div>
                             <p className='text-md font-semibold text-green-600'>₹ {loggedUser?.monthly_limit }</p>
+                        </div>
+                        <div className='bg-gray-100/80 backdrop-filter justify-between flex backdrop-blur rounded-lg w-11/12 shadow-lg py-4 px-8'>
+                            <div className='flex gap-2 items-center'>
+                                <div className="w-1 h-5 bg-purple-700 rounded-full"></div>
+                                <h1 className='text-md font-semibold text-blue-900'>Total Monthly Spending</h1>
+                            </div>
+                            <p className='text-md font-semibold text-green-600'>₹ {dashboardData?.monthly_spend}</p>
+                        </div>
+                        <div className='bg-gray-100/80 backdrop-filter justify-between flex backdrop-blur rounded-lg w-11/12 shadow-lg py-4 px-8'>
+                            <div className='flex gap-2 items-center'>
+                                <div className="w-1 h-5 bg-pink-600 rounded-full"></div>
+                                <h1 className='text-md font-semibold text-blue-900'>Remaining Balance</h1>
+                            </div>
+                            <p className='text-md font-semibold text-green-600'>₹ {(loggedUser?.monthly_limit - dashboardData?.monthly_spend) }</p>
                         </div>
                     </div>
 

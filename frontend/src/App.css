@@ -35,3 +35,18 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
     cursor: pointer;
 }
+
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+/* Firefox */
+.no-scrollbar {
+    scrollbar-width: none;
+}
+
+/* IE 10+ */
+.no-scrollbar {
+    -ms-overflow-style: none;
+}

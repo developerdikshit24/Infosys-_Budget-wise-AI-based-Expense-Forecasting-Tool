@@ -2,12 +2,14 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { toast } from 'react-toastify';
 import { extractErrorMessage } from '../constant.js'
 import { axiosInstance } from "../connection/axios.js";
-import { getExpenseCatgoryThunk } from "./expense.js";
+import { getCategoryTotalExpenseThunk, getDashboardDataThunk, getExpenseCatgoryThunk } from "./expense.js";
 
 
 export const getCurrentUserThunk = createAsyncThunk('auth/getCurrentUser', async (_, { dispatch, rejectWithValue }) => {
     try {
         const res = await axiosInstance.get('/users/get-user');
+        dispatch(getDashboardDataThunk())
+        dispatch(getCategoryTotalExpenseThunk())
         return res.data.data
     } catch (error) {
         toast.error(extractErrorMessage(error.response.data || "Internal Server Error!"))
@@ -19,7 +21,6 @@ export const registerUserThunk = createAsyncThunk('auth/registerUser', async (da
     try {
         const res = await axiosInstance.post('/users/register', data)
         toast.success("Welcome ", res.data.name)
-
         return res.data
     } catch (error) {
         toast.error(extractErrorMessage(error.response.data || "Internal Server Error!"))
@@ -30,6 +31,7 @@ export const registerUserThunk = createAsyncThunk('auth/registerUser', async (da
 export const loginUserThunk = createAsyncThunk('auth/loginUser', async (data, { dispatch, rejectWithValue }) => {
     try {
         const res = await axiosInstance.post('/users/login', data);
+        dispatch(getDashboardDataThunk())
         dispatch(getExpenseCatgoryThunk())
         toast.success(`Welcome Back ${res.data.data.name}`)
         return res.data.data
@@ -63,9 +65,11 @@ export const setMonthlyLimitThunk = createAsyncThunk('auth/setMonthlyLimit', asy
 })
 
 
+
 const InitialStage = {
     loggedUser: null,
     isAuthenticating: false,
+   
 }
 
 const authSlice = createSlice({
@@ -128,6 +132,7 @@ const authSlice = createSlice({
             .addCase(setMonthlyLimitThunk.rejected, (state) => {
                 state.isAuthenticating = false
             })
+            
 
     }
 })

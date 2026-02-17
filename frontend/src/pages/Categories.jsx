@@ -3,7 +3,7 @@ import { Trash2, Pencil, IndianRupee, CirclePlus } from 'lucide-react'
 import { useSelector } from 'react-redux';
 
 const Categories = () => {
-    const { expenseCatgories } = useSelector(state=> state.expense)
+    const { categoryExpenseTotal } = useSelector(state => state.expense)
     const categories = [
         { category: "Food", amount: 12000 },
         { category: "Entertainment", amount: 10000 },
@@ -33,12 +33,12 @@ const Categories = () => {
                     </div>
                 </div>
                 {/* All Categories with spending Amount  */}
-                <div className='bg-white backdrop-filter backdrop-blur rounded-lg shadow-lg p-4'>
+                <div className='flex gap-3 items-center'>
+                    <div className="w-1 h-6 bg-fuchsia-600 rounded-full "></div>
+                    <h1 className='text-lg py-4 font-semibold text-blue-950'>All Categories</h1>
+                </div>
+                <div className='bg-white backdrop-filter backdrop-blur h-[350px] rounded-lg shadow-lg p-4 overflow-y-scroll no-scrollbar'>
                     <div className='rounded-xl overflow-hidden'>
-                        <div className='flex gap-3 items-center'>
-                            <div className="w-1 h-6 bg-fuchsia-600 rounded-full "></div>
-                            <h1 className='text-lg py-4 font-semibold text-blue-950'>All Categories</h1>
-                        </div>
                         <table className='w-full border-collapse text-left'>
                             <thead className='bg-blue-200/80 rounded-xl '>
                                 <tr className="border-b w-full text-blue-900/80 rounded-2xl ">
@@ -48,16 +48,16 @@ const Categories = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {expenseCatgories.map((exp, index) => (
+                                {categoryExpenseTotal?.map((exp, index) => (
                                     <tr
                                         key={index}
                                         className="border-b hover:bg-blue-50 transition duration-200"
                                     >
-                                        <td className="py-3 text-left pl-2 font-semibold px-0.5"> {index + 1}{". "} {exp.category_name}</td>
+                                        <td className="py-3 text-left pl-2 font-semibold px-0.5"> {index + 1}{". "} {exp?.category}</td>
                                         <td className="py-3 text-left">
                                             <div className='flex gap-1'>
                                                 {<IndianRupee className='w-4' />}
-                                                {Date.now(exp?.created_at)}
+                                                {exp?.total}
                                             </div>
                                         </td>
                                         <td className="py-3 text-center font-semibold ">

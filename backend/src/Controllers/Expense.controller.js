@@ -54,35 +54,128 @@ const getRecentExpense = asyncHandler(async (req, res) => {
 
         const { userId } = req.body;
         const [result] = await db.query(
-
             `SELECT 
-             c.category_name,
-             e.amount,
-             e.description,
-             e.expense_date
-             FROM expenses e
-             JOIN categories c 
-             ON e.category_id = c.id
-             WHERE e.user_id = ?`,
-
+            c.category_name,
+            e.amount,
+            e.description,
+            e.expense_date
+            FROM expenses e
+            JOIN categories c 
+                ON e.category_id = c.id
+                WHERE e.user_id = ?
+                ORDER BY e.expense_date DESC
+                LIMIT 4`,
             [userId]
-        )
+        );
         if (result.length == 0) {
             return res.status(404).json(new ApiError(404, "No Recent Transaction"))
         }
 
 
         return res.status(201).json(new ApiResponse(201, result, "Recent transaction fetch successfully"));
-    
+
     } catch (error) {
         return res.status(500).json(new ApiError(500, error))
     }
 
 })
 
+const getDashboardData = asyncHandler(async (req, res) => {
+    try {
+        const error = validationResult(req)
+
+        if (!error.isEmpty()) {
+            return res.status(400).json(new ApiError(400, error.array()))
+        }
+
+        const userId = req.user.id;
+        if (!userId) return res.status(401).json(new ApiError(401, "Unauthorized Access"))
+
+        const [total_spend] = await db.query(
+            `SELECT IFNULL(SUM(amount), 0) as total_spend 
+             FROM expenses WHERE user_id = ?
+             `, [userId]
+        )
+        if (total_spend.length == 0) throw new ApiError(404, "No Total Spendind Data Found!")
+        const [todays_spend] = await db.query(
+            `SELECT IFNULL(SUM(amount), 0) as todays_spend
+                 FROM expenses WHERE user_id = ?
+                 AND DATE(expense_date) = CURDATE();`,
+            [userId]
+        )
+        if (todays_spend.length == 0) throw new ApiError(404, "No Today Spendind Data Found!")
+
+        const [monthly_spending] = await db.query(
+            `SELECT IFNULL(SUM(amount), 0) as monthly_spend
+                 FROM expenses WHERE user_id = ?
+                 AND MONTH(expense_date) = MONTH(CURDATE())
+                 AND YEAR(expense_date) = YEAR(CURDATE());
+                 `
+            , [userId]
+        )
+        if (monthly_spending.length == 0) throw new ApiError(404, "No Monthly Spendind Data Found!")
+
+        const [spending_data] = await db.query(
+            `SELECT
+             DATE_FORMAT(expense_date, '%b') AS month,
+             IFNULL(SUM(amount),0) AS value
+             FROM expenses
+             WHERE user_id = ?
+             GROUP BY YEAR(expense_date), MONTH(expense_date)
+             ORDER BY YEAR(expense_date), MONTH(expense_date);`, [userId]
+        )
+
+        const result = {
+            todays_spend: todays_spend[0].todays_spend,
+            total_spend: total_spend[0].total_spend,
+            monthly_spend: monthly_spending[0].monthly_spend,
+            spending_data: spending_data
+        }
+
+        return res.status(201).json(new ApiResponse(201, result, "Dashboard data fetch successfully"))
+
+    } catch (error) {
+        return res.status(500).json(
+            new ApiError(500, error)
+        );
+    }
+})
+
+const totalCatgeoryExpense = asyncHandler(async (req, res) => {
+    try {
+        const error = validationResult(req)
+
+        if (!error.isEmpty()) {
+            return res.status(400).json(new ApiError(400, error.array()))
+        }
+        const userId = req.user.id
+        const [category_expense] = await db.query(
+
+            `SELECT
+            c.category_name AS category,
+            IFNULL(SUM(e.amount), 0) AS total
+            FROM categories c
+            LEFT JOIN expenses e
+                ON e.category_id = c.id
+                AND e.user_id = ?
+            GROUP BY c.id, c.category_name
+            ORDER BY total DESC;`,
+            [userId]
+        )
+        if (!category_expense.length) return res.status(404).json(new ApiError(404, "No value found"))
+        return res.status(201).json(new ApiResponse(201, category_expense, "Data fetch successfully"))
+
+    } catch (error) {
+        return res.status(500).json(
+            new ApiError(500, error)
+        );
+    }
+})
 
 export {
     getCategories,
     addExpense,
-    getRecentExpense
+    getRecentExpense,
+    getDashboardData,
+    totalCatgeoryExpense
 }

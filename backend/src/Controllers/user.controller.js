@@ -131,21 +131,21 @@ const updateMonthlyLimit = asyncHandler(async (req, res) => {
         if (!Error.isEmpty()) {
             return res.status(404).json(new ApiError(404, Error.array()))
         }
-    
+
         const userId = req.user.id;
-    
+
         const { monthly_limit_amount } = req.body;
-        
+
         const [result] = await db.query(
             "UPDATE users SET monthly_limit = ? WHERE id = ?",
             [monthly_limit_amount, userId]
         );
-        
+
         if (result.length === 0) return res.status(500).json(new ApiError(500, "Internal Server Error"));
         const [user] = await db.query(
             `Select id, name, email, monthly_limit FROM users WHERE id = ?`, [userId]
         )
-        
+
         return res.status(201).json(new ApiResponse(200, user, "Limit set successfully"))
     } catch (error) {
         return res.status(500).json(
@@ -160,5 +160,5 @@ export {
     registerUser,
     loginUser,
     logoutUser,
-    updateMonthlyLimit
+    updateMonthlyLimit,
 }

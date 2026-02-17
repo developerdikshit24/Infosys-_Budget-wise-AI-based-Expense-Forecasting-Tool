@@ -8,6 +8,8 @@ import { useNavigate } from 'react-router'
 const Dashboard = () => {
     const navigate = useNavigate()
     const { loggedUser } = useSelector(state => state.authentication)
+    const { dashboardData } = useSelector(state => state.expense)
+
 
     useEffect(() => {
         if(!loggedUser) navigate('/login')
@@ -24,15 +26,15 @@ const Dashboard = () => {
                 <div className='bg-gray-100/80 w-1/4 p-2 backdrop-filter backdrop-blur rounded-lg shadow-lg'>
                     <div className='flex gap-2 items-center'>
                         <div className="w-1 h-5 bg-red-700 rounded-full"></div>
-                        <h1 className='text-lg text-blue-950 font-semibold'>Total Spend</h1>
+                        <h1 className='text-lg text-blue-950 font-semibold'> Monthly Spend</h1>
                     </div>
-                    <p className='text-2xl p-2 px-3 font-semibold text-green-700'>₹ 21,300 /-</p>
+                    <p className='text-2xl p-2 px-3 font-semibold text-green-700'>{`₹ ${dashboardData?.monthly_spend || 0} /-`}</p>
                     <p className='px-2 text-sm text-black/80 font-semibold'><span className='font-semibold text-amber-600'>12%</span> more than last month </p>
                 </div>
                 <div className='bg-gray-100/80 w-1/4 p-2 backdrop-filter backdrop-blur rounded-lg shadow-lg'>
                     <div className='flex gap-2 items-center'>
                         <div className="w-1 h-5 bg-amber-600 rounded-full"></div>
-                        <h1 className='text-lg text-blue-950 font-semibold'>Monthly Budget</h1>
+                        <h1 className='text-lg text-blue-950 font-semibold'>Monthly Limit</h1>
                     </div>
                     <p className='text-2xl p-2 px-3 font-semibold text-orange-700'>{`₹ ${loggedUser?.monthly_limit} /-`}</p>
                     <p className='px-2 text-sm text-black/80 font-semibold'><span className='font-semibold text-amber-600'>12%</span> more than last month </p>
@@ -42,7 +44,7 @@ const Dashboard = () => {
                         <div className="w-1 h-5 bg-purple-600 rounded-full"></div>
                         <h1 className='text-lg text-blue-950 font-semibold'>Today's Spend</h1>
                     </div>
-                    <p className='text-2xl p-2 px-3 font-semibold text-blue-900'>₹ 21,300 /-</p>
+                    <p className='text-2xl p-2 px-3 font-semibold text-blue-900'>{`₹ ${dashboardData?.todays_spend || 0} /-`}</p>
                     <p className='px-2 text-sm text-black/80 font-semibold'><span className='font-semibold text-green-600'>12%</span> less than last month </p>
                 </div>
                 <div className='bg-gray-100/80 p-2 w-1/4 backdrop-filter backdrop-blur rounded-lg shadow-lg'>
@@ -50,7 +52,7 @@ const Dashboard = () => {
                         <div className="w-1 h-5 bg-green-600 rounded-full"></div>
                         <h1 className='text-lg text-blue-950 font-semibold'>Remaining Balance</h1>
                     </div>
-                    <p className='text-2xl p-2 px-3 font-semibold text-red-600'>₹ 21,300 /-</p>
+                    <p className='text-2xl p-2 px-3 font-semibold text-red-600'>{`₹ ${loggedUser?.monthly_limit - dashboardData?.monthly_spend || 0} /-`}</p>
                     <p className='px-2 text-sm text-black/80 font-semibold'><span className='font-semibold text-red-500'>15%</span> more from last month </p>
                 </div>
             </div>
