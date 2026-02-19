@@ -33,7 +33,8 @@ export const loginUserThunk = createAsyncThunk('auth/loginUser', async (data, { 
         const res = await axiosInstance.post('/users/login', data);
         dispatch(getDashboardDataThunk())
         dispatch(getExpenseCatgoryThunk())
-        toast.success(`Welcome Back ${res.data.data.name}`)
+        dispatch(getCategoryTotalExpenseThunk())
+        toast.success(`Welcome Back ${res.data.data.name}`) 
         return res.data.data
     } catch (error) {
         toast.error(extractErrorMessage(error.response.data || "Internal Server Error!"))

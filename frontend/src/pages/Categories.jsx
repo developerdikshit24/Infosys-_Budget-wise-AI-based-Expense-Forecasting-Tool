@@ -58,16 +58,9 @@ const Categories = () => {
                                             </div>
                                         </td>
                                         <td className="py-3 text-center font-semibold ">
-                                            <button className='mr-4 px-2 py-0.5 rounded-md bg-blue-100 cursor-pointer hover:bg-blue-200 text-center'>
-                                                <div className='flex gap-1'>
-                                                    {<Pencil className='w-4' />}
-                                                    <h1>Edit</h1>
-                                                </div>
-                                            </button>
                                             <button className='px-2 py-0.5 rounded-md bg-gray-200 cursor-pointer hover:bg-red-500 hover:text-white text-center'>
                                                 <div className='flex gap-1'>
                                                     {<Trash2 className='w-4' />}
-                                                    <h1>Delete</h1>
                                                 </div>
                                             </button>
                                         </td>
