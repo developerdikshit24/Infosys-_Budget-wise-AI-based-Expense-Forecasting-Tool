@@ -172,6 +172,17 @@ const totalCatgeoryExpense = asyncHandler(async (req, res) => {
     }
 })
 
+const addExpenseCategory = asyncHandler(async (req, res) => {
+    const [Error] = validationResult(req);
+    if (!Error.isEmpty()) {
+        return res.status(400).json(new ApiError(400, Error.array()))
+    }
+    const { category } = req.body;
+    const [result] = await db.query(
+        ``
+    )
+})
+
 export {
     getCategories,
     addExpense,
