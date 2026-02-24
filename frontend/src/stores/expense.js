@@ -40,29 +40,65 @@ export const getRecentExpenseThunk = createAsyncThunk('expense/getRecentExpense'
     }
 })
 
-export const getDashboardDataThunk = createAsyncThunk('expense/getDashboardData', async (_, {dispatch, rejectWithValue}) => {
+export const getDashboardDataThunk = createAsyncThunk('expense/getDashboardData', async (_, { dispatch, rejectWithValue }) => {
     try {
         const res = await axiosInstance.get('/expense/get-dashData')
-       
+
         return res.data.data
-        
+
     } catch (error) {
         toast.error(extractErrorMessage(error.response.data || "Internal Server Error!"))
         return rejectWithValue(error.response.data || "Internal Server Error !")
-        
+
     }
 })
 
-export const getCategoryTotalExpenseThunk = createAsyncThunk('expense/get-categoryExpense', async (_,{dispatch, rejectWithValue}) => {
+export const getCategoryTotalExpenseThunk = createAsyncThunk('expense/get-categoryExpense', async (_, { dispatch, rejectWithValue }) => {
     try {
         const res = await axiosInstance.get('/expense/get-categoryExpense');
         return res.data.data
-        
+
     } catch (error) {
         toast.error(extractErrorMessage(error.response.data || "Internal Server Error!"))
         return rejectWithValue(error.response.data || "Internal Server Error !")
     }
 })
+
+export const addUserExpenseCategory = createAsyncThunk('expense/addUserExpenseCategory', async (data, { dispatch, rejectWithValue }) => {
+    try {
+        
+        const res = await axiosInstance.post('/expense/add-userExpenseCategory', data)
+        toast.success(res.data.message)
+        return res.data.data
+    } catch (error) {
+        toast.error(extractErrorMessage(error.response.data || "Internal Server Error!"))
+        return rejectWithValue(error.response.data || "Internal Server Error !")
+    }
+})
+
+export const getUserExpenseCategory = createAsyncThunk('expense/getUserExpenseCategory', async (_, { dispatch, rejectWithValue }) => {
+    try {
+        const res = await axiosInstance.get('/expense/get-userExpenseCategory');
+        return res.data.data
+    } catch (error) {
+        toast.error(extractErrorMessage(error.response.data || "Internal Server Error!"))
+        return rejectWithValue(error.response.data || "Internal Server Error !")
+    }
+})
+
+export const deleteUserExpenseCategory = createAsyncThunk('expense/deleteUserExpenseCatgory', async (data, { dispatch, rejectWithValue }) => {
+    try {
+        const res = await axiosInstance.delete('/expense/delete-userExpenseCategory', data);
+        dispatch(getUserExpenseCategory())
+        toast.success(res.data.message);
+        return res.data.data
+
+    } catch (error) {
+        toast.error(extractErrorMessage(error.response.data || "Internal Server Error!"))
+        return rejectWithValue(error.response.data || "Internal Server Error !")
+    }
+})
+
 
 
 const InitialStage = {
@@ -71,7 +107,8 @@ const InitialStage = {
     recentExenses: [],
     isFetching: false,
     dashboardData: null,
-    categoryExpenseTotal:null
+    categoryExpenseTotal: null,
+    userExpenseCategory: []
 
 }
 
@@ -119,6 +156,35 @@ const expenseSlice = createSlice({
                 state.isFetching = false
             })
             .addCase(getCategoryTotalExpenseThunk.rejected, (state) => {
+                state.isFetching = false
+            })
+            .addCase(addUserExpenseCategory.pending, (state) => {
+                state.isFetching = true
+            })
+            .addCase(addUserExpenseCategory.fulfilled, (state) => {
+                state.isFetching = false
+            })
+            .addCase(addUserExpenseCategory.rejected, (state) => {
+                state.isFetching = false
+            })
+            .addCase(getUserExpenseCategory.pending, (state) => {
+                state.isFetching = true
+            })
+            .addCase(getUserExpenseCategory.fulfilled, (state, action) => {
+                state.userExpenseCategory = action.payload
+                state.isFetching = false
+            })
+            .addCase(getUserExpenseCategory.rejected, (state) => {
+                state.isFetching = false
+
+            })
+            .addCase(deleteUserExpenseCategory.pending, (state) => {
+                state.isFetching = true
+            })
+            .addCase(deleteUserExpenseCategory.fulfilled, (state) => {
+                state.isFetching = false
+            })
+            .addCase(deleteUserExpenseCategory.rejected, (state) => {
                 state.isFetching = false
             })
 

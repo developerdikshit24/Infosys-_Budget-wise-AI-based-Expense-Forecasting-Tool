@@ -1,10 +1,24 @@
 import React, { useState } from 'react'
 import { X } from 'lucide-react'
+import { useDispatch, useSelector } from 'react-redux'
+import { toast } from 'react-toastify'
+import { addUserExpenseCategory } from '../stores/expense'
 const AddCategories = () => {
 
     const [value, setValue] = useState('')
-
-    const handleClick = ()=>{}
+    const { expenseCatgories } = useSelector(state => state.expense)
+    const dispatch = useDispatch()
+    const handleClick = () => {
+        if(!value.trim()) return toast.warn("Input Field Required")
+        const isExistAlready = expenseCatgories.some((cat) => cat.category_name.toLowerCase() == value.toLowerCase().trim());
+        if (isExistAlready) {
+            return toast.error("Category already exist!");
+        }
+        dispatch(addUserExpenseCategory({'category_name': value}))
+        
+    }
+    
+    
     return (
         <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 ease-in-out duration-300 flex-col bg-blue-50/50 backdrop-filter backdrop-blur rounded-lg shadow-lg flex w-3/4'>
             <div className='flex items-center justify-between pt-5 p px-6' >
@@ -26,7 +40,7 @@ const AddCategories = () => {
                             type="text"
                             value={value}
                             onChange={(e) => {
-                                setValue(e.value);
+                                setValue(e.target.value);
                             }}
                             placeholder="Enter new Category"
                             className="bg-white w-full pl-10 pr-4 py-3 rounded-xl shadow-md outline-none focus:ring-2 focus:ring-blue-800/70 text-lg font-semibold"

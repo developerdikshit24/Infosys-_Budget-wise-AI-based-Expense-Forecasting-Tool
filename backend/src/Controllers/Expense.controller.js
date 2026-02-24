@@ -152,15 +152,17 @@ const totalCatgeoryExpense = asyncHandler(async (req, res) => {
         const [category_expense] = await db.query(
 
             `SELECT
-            c.category_name AS category,
-            IFNULL(SUM(e.amount), 0) AS total
-            FROM categories c
-            LEFT JOIN expenses e
+                c.category_name AS category,
+                IFNULL(SUM(e.amount), 0) AS total
+                FROM categories c
+                LEFT JOIN expenses e
                 ON e.category_id = c.id
                 AND e.user_id = ?
-            GROUP BY c.id, c.category_name
-            ORDER BY total DESC;`,
-            [userId]
+                WHERE c.user_id = 0
+                OR c.user_id = ?
+                GROUP BY c.id, c.category_name
+                ORDER BY total DESC;`,
+            [userId, userId]
         )
         if (!category_expense.length) return res.status(404).json(new ApiError(404, "No value found"))
         return res.status(201).json(new ApiResponse(201, category_expense, "Data fetch successfully"))
@@ -173,14 +175,67 @@ const totalCatgeoryExpense = asyncHandler(async (req, res) => {
 })
 
 const addExpenseCategory = asyncHandler(async (req, res) => {
-    const [Error] = validationResult(req);
-    if (!Error.isEmpty()) {
-        return res.status(400).json(new ApiError(400, Error.array()))
+        const Error = validationResult(req);
+        if (!Error.isEmpty()) {
+            return res.status(400).json(new ApiError(400, Error.array()))
+        }
+    
+        const { category_name } = req.body;
+        const [result] = await db.query(
+            `INSERT INTO categories (category_name, user_id) VALUES (?, ?)`,
+            [category_name, req.user.id]
+        )
+        if (!result.length) throw res.status(500, "Internal server error");
+        return res.status(200).json(new ApiResponse(200, result, "Category Add Successfully"))
+
+})
+
+
+const getUserCategory = asyncHandler(async (req, res) => {
+    try {
+        const Error = validationResult(req);
+        if (!Error.isEmpty()) {
+            return res.status(400).json(new ApiError(400, Error.array()))
+        }
+
+        const [result] = await db.query(
+            `SELECT * FROM category WHERE user_id = ?`,
+            [req.user.id]
+        )
+        if (!result.length) return res.status(500, "Internal server error");
+        return res.status(200).json(new ApiResponse(200, result, "Fetch Category Successfully"))
+
+    } catch (error) {
+        return res.status(500).json(
+            new ApiError(500, error)
+        );
     }
-    const { category } = req.body;
-    const [result] = await db.query(
-        ``
-    )
+})
+
+const deletUserCategory = asyncHandler(async (req, res) => {
+    try {
+        const Error = validationResult(req)
+        if (!Error.isEmpty()) {
+            return res.status(400).json(new ApiError(400, Error.array()))
+        }
+        const { category_id } = req.body
+        const [result] = await db.query(
+            `Delete from category
+            where user_id = ?
+            AND
+            category_id = ?
+            `
+            , [req.user.id, category_id]
+        );
+
+        if (!result.length) return res.status(500, "Internal server error");
+        return res.status(200).json(new ApiResponse(200, result, "Delete Category Successfully"));
+
+    } catch (error) {
+        return res.status(500).json(
+            new ApiError(500, error)
+        );
+    }
 })
 
 export {
@@ -188,5 +243,8 @@ export {
     addExpense,
     getRecentExpense,
     getDashboardData,
-    totalCatgeoryExpense
+    totalCatgeoryExpense,
+    addExpenseCategory,
+    getUserCategory,
+    deletUserCategory
 }
