@@ -17,7 +17,7 @@ const registerUser = asyncHandler(async (req, res) => {
     const error = validationResult(req)
 
     if (!error.isEmpty()) {
-        return res.status(400).json(new ApiError(400, error.array()))
+        throw new ApiError(400, error.array())
     }
 
 
@@ -30,9 +30,8 @@ const registerUser = asyncHandler(async (req, res) => {
         );
 
         if (rows.length > 0) {
-            return res.status(409).json(
-                new ApiError(409, "User already exists")
-            );
+            throw new ApiError(409, "User already exists")
+    
         }
 
         const encrption = await bcrypt.genSalt(10);
@@ -48,9 +47,7 @@ const registerUser = asyncHandler(async (req, res) => {
         );
 
     } catch (error) {
-        return res.status(500).json(
-            new ApiError(500, error)
-        );
+        throw new ApiError(500, error)
     }
 
 })
@@ -59,7 +56,7 @@ const registerUser = asyncHandler(async (req, res) => {
 const loginUser = asyncHandler(async (req, res) => {
     const error = validationResult(req);
     if (!error.isEmpty()) {
-        return res.status(400).json(new ApiError(400, error.array()));
+        throw new ApiError(400, error.array());
     }
     const { email, password } = req.body;
 
@@ -69,13 +66,13 @@ const loginUser = asyncHandler(async (req, res) => {
     )
 
     if (row.length === 0) {
-        return res.status(404).json(new ApiError(404, "User doesn't exist"))
+        throw new ApiError(404, "User doesn't exist")
     }
     const user = row[0];
     const validatePassword = await bcrypt.compare(password, user.password)
 
     if (!validatePassword) {
-        return res.status(401).json(new ApiError(401, "Invalid Credentials"));
+        throw new ApiError(401, "Invalid Credentials");
     }
 
     const token = jwt.sign({
@@ -108,7 +105,7 @@ const loginUser = asyncHandler(async (req, res) => {
 const logoutUser = asyncHandler(async (req, res) => {
 
     if (!req.user) {
-        return res.status(401).json(new ApiError(401, "Unauthorized Access"))
+         throw new ApiError(401, "Unauthorized Access")
     }
 
     const option = {
@@ -129,7 +126,7 @@ const updateMonthlyLimit = asyncHandler(async (req, res) => {
     try {
         const Error = validationResult(req);
         if (!Error.isEmpty()) {
-            return res.status(404).json(new ApiError(404, Error.array()))
+            throw new ApiError(404, Error.array())
         }
 
         const userId = req.user.id;
@@ -141,16 +138,14 @@ const updateMonthlyLimit = asyncHandler(async (req, res) => {
             [monthly_limit_amount, userId]
         );
 
-        if (result.length === 0) return res.status(500).json(new ApiError(500, "Internal Server Error"));
+        if (result.length === 0) throw new ApiError(500, "Internal Server Error");
         const [user] = await db.query(
             `Select id, name, email, monthly_limit FROM users WHERE id = ?`, [userId]
         )
 
         return res.status(201).json(new ApiResponse(200, user, "Limit set successfully"))
     } catch (error) {
-        return res.status(500).json(
-            new ApiError(500, error)
-        );
+        throw  new ApiError(500, error)
     }
 
 })

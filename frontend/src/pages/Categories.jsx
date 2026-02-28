@@ -1,12 +1,16 @@
 import React, { useState } from 'react'
 import { Trash2, Pencil, IndianRupee, CirclePlus } from 'lucide-react'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import AddCategories from '../components/AddCategories';
+import { deleteUserExpenseCategory, ToggleAddExpenseCard } from '../stores/expense';
 
 const Categories = () => {
-    const { categoryExpenseTotal } = useSelector(state => state.expense)
-    // TODO: Replace with store for global access 
-    const [isActive, setIsActive] = useState(false)
+    const { categoryExpenseTotal, isAddExpenseCardActive } = useSelector(state => state.expense)
+    const dispatch = useDispatch()
+    const handleDeleteClick = (category_id) => {
+        dispatch(deleteUserExpenseCategory({ 'category_id': category_id }))
+    }
+    
     return (
         <div className='w-[87%] h-full flex relative justify-center items-center'>
             <div className="bg-gray-100/80 backdrop-filter backdrop-blur rounded-lg w-11/12 shadow-lg p-4">
@@ -21,7 +25,7 @@ const Categories = () => {
                     </div>
                     <div className='w-full flex items-center justify-end p-3 '>
 
-                        <button onClick={() => { setIsActive(!isActive) }} className='bg-blue-800 p-2 text-white hover:bg-blue-900 ease-in-out duration-200 rounded-lg font-semibold'>
+                        <button onClick={() => {dispatch(ToggleAddExpenseCard())}} className='bg-blue-800 p-2 text-white hover:bg-blue-900 ease-in-out duration-200 rounded-lg font-semibold'>
                             <div className='flex gap-1 items-center'>
                                 {<CirclePlus className='w-4' />}
                                 <h1>Add Expense</h1>
@@ -58,7 +62,7 @@ const Categories = () => {
                                             </div>
                                         </td>
                                         <td className="py-3 text-center font-semibold ">
-                                            <button className='px-2 py-0.5 rounded-md bg-gray-200 cursor-pointer hover:bg-red-500 hover:text-white text-center'>
+                                            <button onClick={()=>{handleDeleteClick(exp?.category_id)}} disabled={exp?.total != 0 || exp?.user_id == 0 } className='px-2 py-0.5 disabled:bg-gray-300 disabled:text-gray-500 rounded-md bg-gray-200 cursor-pointer hover:bg-red-500 hover:text-white text-center'>
                                                 <div className='flex gap-1'>
                                                     {<Trash2 className='w-4' />}
                                                 </div>
@@ -71,7 +75,7 @@ const Categories = () => {
                     </div>
                 </div>
             </div>
-           { isActive && <AddCategories />}
+            {isAddExpenseCardActive && <AddCategories />}
         </div>
 
     )

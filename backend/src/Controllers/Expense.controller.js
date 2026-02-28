@@ -11,11 +11,11 @@ const getCategories = asyncHandler(async (req, res) => {
             'Select * FROM categories'
         )
         if (categories.length == 0) {
-            return res.status(404).json(new ApiError(404, "No Categories Available"))
+            throw new ApiError(404, "No Categories Available")
         }
         return res.status(200).json(new ApiResponse(200, categories, "Categories fetch successfully"))
     } catch (error) {
-        return res.status(500).json(new ApiError(500, error))
+        throw new ApiError(500, error)
     }
 
 
@@ -26,7 +26,7 @@ const addExpense = asyncHandler(asyncHandler(async (req, res) => {
     try {
         const Error = validationResult(req);
         if (!Error.isEmpty()) {
-            return res.status(404).json(new ApiError(404, Error.array()))
+            throw new ApiError(404, Error.array())
         }
 
         const { user_id, category_id, amount, description, expense_date } = req.body;
@@ -38,7 +38,7 @@ const addExpense = asyncHandler(asyncHandler(async (req, res) => {
 
         return res.status(201).json(new ApiResponse(201, result, "Expense Add Successfully"))
     } catch (error) {
-        return res.status(500).json(new ApiError(500, error))
+        throw new ApiError(500, error)
 
     }
 
@@ -49,7 +49,7 @@ const getRecentExpense = asyncHandler(async (req, res) => {
     try {
         const Error = validationResult(req);
         if (!Error.isEmpty()) {
-            return res.status(404).json(new ApiError(404, Error.array()))
+            throw new ApiError(404, Error.array())
         }
 
         const { userId } = req.body;
@@ -68,14 +68,14 @@ const getRecentExpense = asyncHandler(async (req, res) => {
             [userId]
         );
         if (result.length == 0) {
-            return res.status(404).json(new ApiError(404, "No Recent Transaction"))
+            throw new ApiError(404, "No Recent Transaction")
         }
 
 
         return res.status(201).json(new ApiResponse(201, result, "Recent transaction fetch successfully"));
 
     } catch (error) {
-        return res.status(500).json(new ApiError(500, error))
+        throw new ApiError(500, error)
     }
 
 })
@@ -85,11 +85,11 @@ const getDashboardData = asyncHandler(async (req, res) => {
         const error = validationResult(req)
 
         if (!error.isEmpty()) {
-            return res.status(400).json(new ApiError(400, error.array()))
+            throw new ApiError(400, error.array())
         }
 
         const userId = req.user.id;
-        if (!userId) return res.status(401).json(new ApiError(401, "Unauthorized Access"))
+        if (!userId) throw new ApiError(401, "Unauthorized Access")
 
         const [total_spend] = await db.query(
             `SELECT IFNULL(SUM(amount), 0) as total_spend 
@@ -135,9 +135,7 @@ const getDashboardData = asyncHandler(async (req, res) => {
         return res.status(201).json(new ApiResponse(201, result, "Dashboard data fetch successfully"))
 
     } catch (error) {
-        return res.status(500).json(
-            new ApiError(500, error)
-        );
+        throw new ApiError(500, error)
     }
 })
 
@@ -146,13 +144,15 @@ const totalCatgeoryExpense = asyncHandler(async (req, res) => {
         const error = validationResult(req)
 
         if (!error.isEmpty()) {
-            return res.status(400).json(new ApiError(400, error.array()))
+            throw new ApiError(400, error.array())
         }
         const userId = req.user.id
         const [category_expense] = await db.query(
 
             `SELECT
                 c.category_name AS category,
+                c.id AS category_id,
+                c.user_id AS user_id,
                 IFNULL(SUM(e.amount), 0) AS total
                 FROM categories c
                 LEFT JOIN expenses e
@@ -164,78 +164,59 @@ const totalCatgeoryExpense = asyncHandler(async (req, res) => {
                 ORDER BY total DESC;`,
             [userId, userId]
         )
-        if (!category_expense.length) return res.status(404).json(new ApiError(404, "No value found"))
+        if (!category_expense.length) throw new ApiError(404, "No value found")
         return res.status(201).json(new ApiResponse(201, category_expense, "Data fetch successfully"))
 
     } catch (error) {
-        return res.status(500).json(
-            new ApiError(500, error)
-        );
+        throw new ApiError(500, error)
     }
 })
 
 const addExpenseCategory = asyncHandler(async (req, res) => {
+    try {
         const Error = validationResult(req);
         if (!Error.isEmpty()) {
-            return res.status(400).json(new ApiError(400, Error.array()))
+            throw new ApiError(400, Error.array())
         }
-    
+
         const { category_name } = req.body;
         const [result] = await db.query(
             `INSERT INTO categories (category_name, user_id) VALUES (?, ?)`,
             [category_name, req.user.id]
         )
-        if (!result.length) throw res.status(500, "Internal server error");
         return res.status(200).json(new ApiResponse(200, result, "Category Add Successfully"))
-
-})
-
-
-const getUserCategory = asyncHandler(async (req, res) => {
-    try {
-        const Error = validationResult(req);
-        if (!Error.isEmpty()) {
-            return res.status(400).json(new ApiError(400, Error.array()))
-        }
-
-        const [result] = await db.query(
-            `SELECT * FROM category WHERE user_id = ?`,
-            [req.user.id]
-        )
-        if (!result.length) return res.status(500, "Internal server error");
-        return res.status(200).json(new ApiResponse(200, result, "Fetch Category Successfully"))
-
     } catch (error) {
-        return res.status(500).json(
-            new ApiError(500, error)
-        );
+        throw new ApiError(500, error)
     }
+
 })
+
 
 const deletUserCategory = asyncHandler(async (req, res) => {
-    try {
-        const Error = validationResult(req)
-        if (!Error.isEmpty()) {
-            return res.status(400).json(new ApiError(400, Error.array()))
-        }
-        const { category_id } = req.body
-        const [result] = await db.query(
-            `Delete from category
-            where user_id = ?
-            AND
-            category_id = ?
-            `
-            , [req.user.id, category_id]
-        );
+   try {
+     const Error = validationResult(req)
+     
+     if (!Error.isEmpty()) {
+         throw new ApiError(400, Error.array())
+     }
+ 
+     const { category_id } = req.body
+ 
+     const [result] = await db.query(
+         `Delete from categories
+             where user_id = ?
+             AND
+             id = ?
+             `
+         , [req.user.id, category_id]
+     );
+     
+     if (!result.length) throw new ApiError(500, "Internal server error");
+     return res.status(200).json(new ApiResponse(200, result, "Delete Category Successfully"));
+   } catch (error) {
+       throw new ApiError(500, error)
+   }
 
-        if (!result.length) return res.status(500, "Internal server error");
-        return res.status(200).json(new ApiResponse(200, result, "Delete Category Successfully"));
-
-    } catch (error) {
-        return res.status(500).json(
-            new ApiError(500, error)
-        );
-    }
 })
 
 export {
@@ -245,6 +226,5 @@ export {
     getDashboardData,
     totalCatgeoryExpense,
     addExpenseCategory,
-    getUserCategory,
     deletUserCategory
 }

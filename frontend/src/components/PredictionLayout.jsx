@@ -16,7 +16,9 @@ const PredictionLayout = () => {
         { date: "16-01", title: "Restaurant", category: "Food", amount: 1000 },
     ];
     useEffect(() => {
-        dispatch(getRecentExpenseThunk({ userId: loggedUser?.id }))
+        if (loggedUser) {
+            dispatch(getRecentExpenseThunk({ userId: loggedUser?.id }))
+        }
     },[loggedUser])
 
     return (

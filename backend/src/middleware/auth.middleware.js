@@ -17,14 +17,14 @@ export const verifyJwt = asyncHandler(async (req, res, next) => {
         )
         
         if (!user.length) {
-            throw new ApiError(401, "Invaild Access Token")
+            throw new ApiError(401, "Login Required!")
         }
         req.user = user[0];
         
         next();
             
     } catch (error) {
-        throw new ApiError(401, "Invaild Access Token")
+        throw new ApiError(401, "Login Required!")
 
     }
 })

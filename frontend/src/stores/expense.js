@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { toast } from 'react-toastify';
 import { extractErrorMessage } from '../constant.js'
 import { axiosInstance } from "../connection/axios.js";
+import { redirect } from "react-router";
 
 
 export const getExpenseCatgoryThunk = createAsyncThunk('expenses/GetExpenseCategory', async (data, { dispatch, rejectWithValue }) => {
@@ -69,6 +70,8 @@ export const addUserExpenseCategory = createAsyncThunk('expense/addUserExpenseCa
         
         const res = await axiosInstance.post('/expense/add-userExpenseCategory', data)
         toast.success(res.data.message)
+        dispatch(getCategoryTotalExpenseThunk())
+        dispatch(ToggleAddExpenseCard())
         return res.data.data
     } catch (error) {
         toast.error(extractErrorMessage(error.response.data || "Internal Server Error!"))
@@ -76,21 +79,12 @@ export const addUserExpenseCategory = createAsyncThunk('expense/addUserExpenseCa
     }
 })
 
-export const getUserExpenseCategory = createAsyncThunk('expense/getUserExpenseCategory', async (_, { dispatch, rejectWithValue }) => {
-    try {
-        const res = await axiosInstance.get('/expense/get-userExpenseCategory');
-        return res.data.data
-    } catch (error) {
-        toast.error(extractErrorMessage(error.response.data || "Internal Server Error!"))
-        return rejectWithValue(error.response.data || "Internal Server Error !")
-    }
-})
 
 export const deleteUserExpenseCategory = createAsyncThunk('expense/deleteUserExpenseCatgory', async (data, { dispatch, rejectWithValue }) => {
     try {
-        const res = await axiosInstance.delete('/expense/delete-userExpenseCategory', data);
-        dispatch(getUserExpenseCategory())
-        toast.success(res.data.message);
+        const res = await axiosInstance.post('/expense/delete-userExpenseCategory', data);
+        dispatch(getCategoryTotalExpenseThunk())
+        toast.success("Category Delete Successfully");
         return res.data.data
 
     } catch (error) {
@@ -108,14 +102,19 @@ const InitialStage = {
     isFetching: false,
     dashboardData: null,
     categoryExpenseTotal: null,
-    userExpenseCategory: []
+    userExpenseCategory: [],
+    isAddExpenseCardActive:false
 
 }
 
 const expenseSlice = createSlice({
     name: "Expense",
     initialState: InitialStage,
-    reducers: {},
+    reducers: {
+        ToggleAddExpenseCard: (state) => {
+            state.isAddExpenseCardActive = !state.isAddExpenseCardActive
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(getExpenseCatgoryThunk.pending, (state) => {
@@ -167,17 +166,6 @@ const expenseSlice = createSlice({
             .addCase(addUserExpenseCategory.rejected, (state) => {
                 state.isFetching = false
             })
-            .addCase(getUserExpenseCategory.pending, (state) => {
-                state.isFetching = true
-            })
-            .addCase(getUserExpenseCategory.fulfilled, (state, action) => {
-                state.userExpenseCategory = action.payload
-                state.isFetching = false
-            })
-            .addCase(getUserExpenseCategory.rejected, (state) => {
-                state.isFetching = false
-
-            })
             .addCase(deleteUserExpenseCategory.pending, (state) => {
                 state.isFetching = true
             })
@@ -193,5 +181,5 @@ const expenseSlice = createSlice({
 
 
 
-export const { } = expenseSlice.actions
+export const { ToggleAddExpenseCard } = expenseSlice.actions
 export default expenseSlice.reducer

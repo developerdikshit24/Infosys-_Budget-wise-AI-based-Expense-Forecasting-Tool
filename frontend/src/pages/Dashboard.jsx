@@ -4,6 +4,7 @@ import SpendingChart from '../components/SpendingChart.jsx'
 import CategoryChart from '../components/CategoryChart.jsx'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router'
+import { getFormattedDate } from '../constant.js'
 
 const Dashboard = () => {
     const navigate = useNavigate()
@@ -19,7 +20,7 @@ const Dashboard = () => {
         <div className='w-2/3 mx-2'>
             <div className='p-4 w-full'>
                 <h1 className='text-2xl font-semibold text-blue-950/80'>{`Hello, ${loggedUser?.name?.split(' ')[0]} ✌🏻`} </h1>
-                <p className='text-sm font-semibold text-gray-950/80'>Monday, February 12, 2026</p>
+                <p className='text-sm font-semibold text-gray-950/80'>{getFormattedDate()}</p>
             </div>
             <div className='flex gap-2 w-full'>
                 {/* Short Details Cards */}
@@ -34,7 +35,7 @@ const Dashboard = () => {
                 <div className='bg-gray-100/80 w-1/4 p-2 backdrop-filter backdrop-blur rounded-lg shadow-lg'>
                     <div className='flex gap-2 items-center'>
                         <div className="w-1 h-5 bg-amber-600 rounded-full"></div>
-                        <h1 className='text-lg text-blue-950 font-semibold'>Monthly Limit</h1>
+                        <h1 className='text-lg text-blue-950 font-semibold'>Monthly Budget</h1>
                     </div>
                     <p className='text-2xl p-2 px-3 font-semibold text-orange-700'>{`₹ ${loggedUser?.monthly_limit} /-`}</p>
                     <p className='px-2 text-sm text-black/80 font-semibold'><span className='font-semibold text-amber-600'>12%</span> more than last month </p>
