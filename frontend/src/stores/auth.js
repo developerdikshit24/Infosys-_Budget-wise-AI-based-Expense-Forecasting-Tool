@@ -10,6 +10,7 @@ export const getCurrentUserThunk = createAsyncThunk('auth/getCurrentUser', async
         const res = await axiosInstance.get('/users/get-user');
         dispatch(getDashboardDataThunk())
         dispatch(getCategoryTotalExpenseThunk())
+        toast.success(res.data.message)
         return res.data.data
     } catch (error) {
         toast.error(extractErrorMessage(error.response.data || "Internal Server Error!"))

@@ -210,8 +210,6 @@ const deletUserCategory = asyncHandler(async (req, res) => {
              `
          , [req.user.id, category_id]
      );
-     
-     if (!result.length) throw new ApiError(500, "Internal server error");
      return res.status(200).json(new ApiResponse(200, result, "Delete Category Successfully"));
    } catch (error) {
        throw new ApiError(500, error)

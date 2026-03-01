@@ -9,7 +9,7 @@ import jwt from 'jsonwebtoken';
 
 const getCurrentUser = asyncHandler(async (req, res) => {
     return res.status(200)
-        .json(new ApiResponse(200, req.user, "Current user fetch sucessfully"))
+        .json(new ApiResponse(200, req.user, `Welcome Back ${req.user.name}!`))
 }
 )
 
