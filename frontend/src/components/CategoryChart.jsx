@@ -37,11 +37,43 @@ const COLORS = [
 
 export default function CategoryChart() {
     const { categoryExpenseTotal } = useSelector(state => state.expense)
-    const formattedExpenses = categoryExpenseTotal?.map(exp => ({
-        ...exp,
-        total: Number(exp.total)
-    }));
-    
+    const formattedExpenses = (categoryExpenseTotal || [])
+        .filter(exp => Number(exp.total) > 0)
+        .map(exp => ({
+            ...exp,
+            total: Number(exp.total)
+        }));
+    const RADIAN = Math.PI / 180;
+
+    const renderCustomizedLabel = ({
+        cx,
+        cy,
+        midAngle,
+        innerRadius,
+        outerRadius,
+        percent,
+        name
+    }) => {
+        const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+        const x = cx + radius * Math.cos(-midAngle * RADIAN);
+        const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+        if (percent < 0.05) return null;
+
+        return (
+            <text
+                x={x}
+                y={y}
+                fill="white"
+                textAnchor="middle"
+                dominantBaseline="central"
+                fontSize={12}
+                fontWeight="600"
+            >
+                {name}
+            </text>
+        );
+    };
     return (
         <div className="w-full h-80">
             <ResponsiveContainer width="100%" height="100%">
@@ -51,6 +83,7 @@ export default function CategoryChart() {
                         innerRadius={80}
                         outerRadius={140}
                         paddingAngle={5}
+                        label={renderCustomizedLabel}
                         dataKey="total"
                         nameKey="category"
                     >

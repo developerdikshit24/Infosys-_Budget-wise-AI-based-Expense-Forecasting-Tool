@@ -23,6 +23,7 @@ const AddExpenseCard = () => {
             expense_date: data.expense_date
         }
         dispatch(addExpenseThunk(values))
+        reset();
     }
 
     return (

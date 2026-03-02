@@ -66,7 +66,7 @@ const Dashboard = () => {
                     </div>
                     <SpendingChart />
                 </div>
-                <div className='w-2/5 bg-gray-100/80 backdrop-filter backdrop-blur rounded-lg shadow-lg p-4'>
+                <div className='w-2/5 bg-gray-100/80 backdrop-filter backdrop-blur rounded-lg shadow-lg'>
                     <div className='flex gap-3 items-center p-2'>
                         <div className="w-1 h-6 bg-fuchsia-600 rounded-full "></div>
                         <h2 className="font-semibold text-lg">Expense By Category</h2>

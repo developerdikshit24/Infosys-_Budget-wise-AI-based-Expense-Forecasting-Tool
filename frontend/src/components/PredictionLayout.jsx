@@ -8,13 +8,8 @@ const PredictionLayout = () => {
     const dispatch = useDispatch()
     const { loggedUser } = useSelector(state => state.authentication)
     
-    const { recentExenses } = useSelector(state=> state.expense)
-    const expenses = [
-        { date: "12-01", title: "Zomato", category: "Food", amount: 601 },
-        { date: "13-01", title: "Uber", category: "Travel", amount: 260 },
-        { date: "14-01", title: "Amazon", category: "Shopping", amount: 360 },
-        { date: "16-01", title: "Restaurant", category: "Food", amount: 1000 },
-    ];
+    const { recentExenses } = useSelector(state => state.expense);
+    
     useEffect(() => {
         if (loggedUser) {
             dispatch(getRecentExpenseThunk({ userId: loggedUser?.id }))

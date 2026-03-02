@@ -19,8 +19,9 @@ export const getExpenseCatgoryThunk = createAsyncThunk('expenses/GetExpenseCateg
 export const addExpenseThunk = createAsyncThunk('expense/addExpense', async (data, { dispatch, rejectWithValue }) => {
     try {
         const res = await axiosInstance.post('/expense/add-expense', data)
-        dispatch(getRecentExpenseThunk())
+        dispatch(getRecentExpenseThunk({ userId: data.user_id }))
         dispatch(getDashboardDataThunk())
+        dispatch(getCategoryTotalExpenseThunk())
         toast.success(res.data.message);
         return res.data.data
     } catch (error) {
@@ -67,7 +68,7 @@ export const getCategoryTotalExpenseThunk = createAsyncThunk('expense/get-catego
 
 export const addUserExpenseCategory = createAsyncThunk('expense/addUserExpenseCategory', async (data, { dispatch, rejectWithValue }) => {
     try {
-        
+
         const res = await axiosInstance.post('/expense/add-userExpenseCategory', data)
         toast.success(res.data.message)
         dispatch(getCategoryTotalExpenseThunk())
@@ -103,7 +104,7 @@ const InitialStage = {
     dashboardData: null,
     categoryExpenseTotal: null,
     userExpenseCategory: [],
-    isAddExpenseCardActive:false
+    isAddExpenseCardActive: false
 
 }
 
