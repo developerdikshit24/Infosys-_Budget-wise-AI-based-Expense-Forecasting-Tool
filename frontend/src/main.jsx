@@ -15,6 +15,7 @@ import { Provider } from 'react-redux'
 import store from './stores/store.js';
 import Login from './pages/Login.jsx';
 import AuthLoader from './components/AuthLoader.jsx';
+import Reports from './pages/Reports.jsx';
 
 
 createRoot(document.getElementById('root')).render(
@@ -33,6 +34,7 @@ createRoot(document.getElementById('root')).render(
               </Route>
               <Route path='/categories' element={<Categories />} />
               <Route path='/monthly-budget' element={<MonthlyBudget />} />
+              <Route path='/reports' element={<Reports />} />
             </Route>
 
             <Route path='/login' element={<Login />} />
