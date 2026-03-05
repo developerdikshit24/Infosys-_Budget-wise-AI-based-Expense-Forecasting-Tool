@@ -55,7 +55,7 @@ const PredictionLayout = () => {
 
                                 {/* Body */}
                                 <tbody>
-                                    {recentExenses.map((exp, index) => (
+                                    {recentExenses.slice(0, 4).map((exp, index) => (
                                         <tr
                                             key={index}
                                             className="border-b hover:bg-blue-50 transition duration-200"

@@ -31,9 +31,9 @@ export const addExpenseThunk = createAsyncThunk('expense/addExpense', async (dat
     }
 })
 
-export const getRecentExpenseThunk = createAsyncThunk('expense/getRecentExpense', async (data, { dispatch, rejectWithValue }) => {
+export const getRecentExpenseThunk = createAsyncThunk('expense/getRecentExpense', async (_, { dispatch, rejectWithValue }) => {
     try {
-        const res = await axiosInstance.post('/expense/get-recentExpense', data);
+        const res = await axiosInstance.post('/expense/get-recentExpense');
         return res.data.data
     } catch (error) {
 

@@ -52,7 +52,6 @@ const getRecentExpense = asyncHandler(async (req, res) => {
             throw new ApiError(404, Error.array())
         }
 
-        const { userId } = req.body;
         const [result] = await db.query(
             `SELECT 
             c.category_name,
@@ -64,8 +63,8 @@ const getRecentExpense = asyncHandler(async (req, res) => {
                 ON e.category_id = c.id
                 WHERE e.user_id = ?
                 ORDER BY e.expense_date DESC
-                LIMIT 4`,
-            [userId]
+                `,
+            [req.user.id]
         );
         if (result.length == 0) {
             throw new ApiError(404, "No Recent Transaction")
