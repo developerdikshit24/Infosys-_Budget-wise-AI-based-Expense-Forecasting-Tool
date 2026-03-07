@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { addExpense, addExpenseCategory, deletUserCategory, getCategories, getDashboardData, getRecentExpense, totalCatgeoryExpense, } from "../Controllers/Expense.controller.js";
+import { addExpense, addExpenseCategory, deletUserCategory, getAIAnalysis, getCategories, getDashboardData, getRecentExpense, totalCatgeoryExpense, } from "../Controllers/Expense.controller.js";
 import { verifyJwt } from "../middleware/auth.middleware.js";
 
 
@@ -12,5 +12,5 @@ router.route('/get-dashData').get(verifyJwt, getDashboardData)
 router.route('/get-categoryExpense').get(verifyJwt, totalCatgeoryExpense)
 router.route(`/add-userExpenseCategory`).post(verifyJwt, addExpenseCategory)
 router.route('/delete-userExpenseCategory').post(verifyJwt, deletUserCategory)
-
+router.route('/getAIAnalysis').post(verifyJwt, getAIAnalysis)
 export default router

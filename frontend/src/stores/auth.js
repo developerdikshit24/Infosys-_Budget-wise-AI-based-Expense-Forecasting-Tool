@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { toast } from 'react-toastify';
 import { extractErrorMessage } from '../constant.js'
 import { axiosInstance } from "../connection/axios.js";
-import { getCategoryTotalExpenseThunk, getDashboardDataThunk, getExpenseCatgoryThunk, getRecentExpenseThunk } from "./expense.js";
+import { getAIAnalysisThunk, getCategoryTotalExpenseThunk, getDashboardDataThunk, getExpenseCatgoryThunk, getRecentExpenseThunk } from "./expense.js";
 
 
 export const getCurrentUserThunk = createAsyncThunk('auth/getCurrentUser', async (_, { dispatch, rejectWithValue }) => {
@@ -11,6 +11,7 @@ export const getCurrentUserThunk = createAsyncThunk('auth/getCurrentUser', async
         dispatch(getDashboardDataThunk())
         dispatch(getCategoryTotalExpenseThunk())
         dispatch(getRecentExpenseThunk())
+        dispatch(getAIAnalysisThunk())
         toast.success(res.data.message)
         return res.data.data
     } catch (error) {

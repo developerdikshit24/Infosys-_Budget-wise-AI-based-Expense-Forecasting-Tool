@@ -94,6 +94,17 @@ export const deleteUserExpenseCategory = createAsyncThunk('expense/deleteUserExp
     }
 })
 
+export const getAIAnalysisThunk = createAsyncThunk('expense/getAIAnalysis', async (_, {dispatch, rejectWithValue}) => {
+    try {
+        const res = await axiosInstance.post('/expense/getAIAnalysis');
+        console.log(res.data);
+        
+    } catch (error) {
+        toast.error(extractErrorMessage(error.response.data || "Internal Server Error!"))
+        return rejectWithValue(error.response.data || "Internal Server Error !")
+    }
+})
+
 
 
 const InitialStage = {

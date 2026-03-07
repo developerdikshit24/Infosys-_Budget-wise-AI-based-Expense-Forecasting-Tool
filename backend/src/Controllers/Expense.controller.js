@@ -3,7 +3,7 @@ import { ApiError } from '../utils/ApiError.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { validationResult } from 'express-validator';
 import db from '../config/db.js';
-
+import axios from 'axios'
 
 const getCategories = asyncHandler(async (req, res) => {
     try {
@@ -216,6 +216,56 @@ const deletUserCategory = asyncHandler(async (req, res) => {
 
 })
 
+const getAIAnalysis = async (req, res) => {
+
+    const [expense] = await db.query(
+        `SELECT
+        DATE_FORMAT(expense_date,'%Y-%m-01') AS month,
+        SUM(amount) AS total
+        FROM expenses
+        WHERE user_id = ?
+        GROUP BY YEAR(expense_date), MONTH(expense_date)
+        ORDER BY month;`,
+        [req.user.id]
+    )
+
+    const [category] = await db.query(
+        `
+        SELECT
+            c.category_name AS category,
+            SUM(e.amount) AS total
+            FROM expenses e
+            JOIN categories c ON e.category_id = c.id
+            WHERE e.user_id = ?
+            GROUP BY c.category_name
+        `,[req.user.id]
+    )
+    
+    const cleanedExpenses = expense.map(r => ({
+        month: r.month,
+        total: Number(r.total)
+    }));
+
+    // Clean category data
+    const cleanedCategories = category.map(c => ({
+        category: c.category,
+        total: Number(c.total)
+    }));
+
+    console.log(cleanedExpenses,cleanedCategories);
+    
+    
+    const response = await axios.post(
+        "http://localhost:5001/analyze-expenses",
+        {
+            expenses: cleanedExpenses,
+            categories: cleanedCategories
+        }
+    )
+
+    res.json(response.data)
+}
+
 export {
     getCategories,
     addExpense,
@@ -223,5 +273,6 @@ export {
     getDashboardData,
     totalCatgeoryExpense,
     addExpenseCategory,
-    deletUserCategory
+    deletUserCategory,
+    getAIAnalysis
 }
