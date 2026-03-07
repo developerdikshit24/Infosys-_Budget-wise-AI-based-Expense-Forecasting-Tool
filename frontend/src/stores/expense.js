@@ -98,7 +98,7 @@ export const getAIAnalysisThunk = createAsyncThunk('expense/getAIAnalysis', asyn
     try {
         const res = await axiosInstance.post('/expense/getAIAnalysis');
         console.log(res.data);
-        
+        return res.data
     } catch (error) {
         toast.error(extractErrorMessage(error.response.data || "Internal Server Error!"))
         return rejectWithValue(error.response.data || "Internal Server Error !")
@@ -108,14 +108,15 @@ export const getAIAnalysisThunk = createAsyncThunk('expense/getAIAnalysis', asyn
 
 
 const InitialStage = {
-    isFetching: false,
     expenseCatgories: [],
     recentExenses: [],
-    isFetching: false,
+    userExpenseCategory: [],
+    aiAnalysisData :[],
     dashboardData: null,
     categoryExpenseTotal: null,
-    userExpenseCategory: [],
-    isAddExpenseCardActive: false
+    isFetching: false,
+    isAddExpenseCardActive: false,
+    isFetching: false
 
 }
 
@@ -185,6 +186,16 @@ const expenseSlice = createSlice({
                 state.isFetching = false
             })
             .addCase(deleteUserExpenseCategory.rejected, (state) => {
+                state.isFetching = false
+            })
+            .addCase(getAIAnalysisThunk.pending, (state) => {
+                state.isFetching = true
+            })
+            .addCase(getAIAnalysisThunk.fulfilled, (state, action) => {
+                state.aiAnalysisData = action.payload
+                state.isFetching = false
+            })
+            .addCase(getAIAnalysisThunk.rejected, (state) => {
                 state.isFetching = false
             })
 

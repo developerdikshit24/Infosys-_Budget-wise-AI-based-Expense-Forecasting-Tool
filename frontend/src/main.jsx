@@ -16,6 +16,7 @@ import store from './stores/store.js';
 import Login from './pages/Login.jsx';
 import AuthLoader from './components/AuthLoader.jsx';
 import Reports from './pages/Reports.jsx';
+import AIAnalysis from './pages/AIAnalysis.jsx';
 
 
 createRoot(document.getElementById('root')).render(
@@ -35,6 +36,7 @@ createRoot(document.getElementById('root')).render(
               <Route path='/categories' element={<Categories />} />
               <Route path='/monthly-budget' element={<MonthlyBudget />} />
               <Route path='/reports' element={<Reports />} />
+              <Route path='/ai-analysis' element={<AIAnalysis />} />
             </Route>
 
             <Route path='/login' element={<Login />} />

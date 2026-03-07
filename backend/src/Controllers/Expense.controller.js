@@ -192,79 +192,102 @@ const addExpenseCategory = asyncHandler(async (req, res) => {
 
 
 const deletUserCategory = asyncHandler(async (req, res) => {
-   try {
-     const Error = validationResult(req)
-     
-     if (!Error.isEmpty()) {
-         throw new ApiError(400, Error.array())
-     }
- 
-     const { category_id } = req.body
- 
-     const [result] = await db.query(
-         `Delete from categories
+    try {
+        const Error = validationResult(req)
+
+        if (!Error.isEmpty()) {
+            throw new ApiError(400, Error.array())
+        }
+
+        const { category_id } = req.body
+
+        const [result] = await db.query(
+            `Delete from categories
              where user_id = ?
              AND
              id = ?
              `
-         , [req.user.id, category_id]
-     );
-     return res.status(200).json(new ApiResponse(200, result, "Delete Category Successfully"));
-   } catch (error) {
-       throw new ApiError(500, error)
-   }
+            , [req.user.id, category_id]
+        );
+        return res.status(200).json(new ApiResponse(200, result, "Delete Category Successfully"));
+    } catch (error) {
+        throw new ApiError(500, error)
+    }
 
 })
 
 const getAIAnalysis = async (req, res) => {
+    try {
 
-    const [expense] = await db.query(
-        `SELECT
-        DATE_FORMAT(expense_date,'%Y-%m-01') AS month,
-        SUM(amount) AS total
-        FROM expenses
-        WHERE user_id = ?
-        GROUP BY YEAR(expense_date), MONTH(expense_date)
-        ORDER BY month;`,
-        [req.user.id]
-    )
+        const [expense] = await db.query(
+            `SELECT
+                DATE_FORMAT(expense_date,'%Y-%m-01') AS month,
+                SUM(amount) AS total
+            FROM expenses
+            WHERE user_id = ?
+            GROUP BY YEAR(expense_date), MONTH(expense_date)
+            ORDER BY month`,
+            [req.user.id]
+        );
 
-    const [category] = await db.query(
-        `
-        SELECT
-            c.category_name AS category,
-            SUM(e.amount) AS total
+        const [category] = await db.query(
+            `
+            SELECT
+                c.category_name AS category,
+                SUM(e.amount) AS total
             FROM expenses e
             JOIN categories c ON e.category_id = c.id
             WHERE e.user_id = ?
             GROUP BY c.category_name
-        `,[req.user.id]
-    )
-    
-    const cleanedExpenses = expense.map(r => ({
-        month: r.month,
-        total: Number(r.total)
-    }));
+            `,
+            [req.user.id]
+        );
 
-    // Clean category data
-    const cleanedCategories = category.map(c => ({
-        category: c.category,
-        total: Number(c.total)
-    }));
+        const [budgetResult] = await db.query(
+            `
+            SELECT monthly_limit
+            FROM users
+            WHERE id = ?
+            `,
+            [req.user.id]
+        );
+        console.log(budgetResult);
+        
 
-    console.log(cleanedExpenses,cleanedCategories);
-    
-    
-    const response = await axios.post(
-        "http://localhost:5001/analyze-expenses",
-        {
-            expenses: cleanedExpenses,
-            categories: cleanedCategories
+        const userBudget = budgetResult.length ? Number(budgetResult[0].monthly_limit) : 0;
+
+        const cleanedExpenses = expense.map(r => ({
+            month: r.month,
+            total: Number(r.total)
+        }));
+
+        const cleanedCategories = category.map(c => ({
+            category: c.category,
+            total: Number(c.total)
+        }));
+
+        if (cleanedExpenses.length < 3) {
+            return res.json({
+                message: "Not enough data for AI prediction"
+            });
         }
-    )
 
-    res.json(response.data)
-}
+        const response = await axios.post(process.env.AI_API, {
+            expenses: cleanedExpenses,
+            categories: cleanedCategories,
+            budget: userBudget
+        });
+
+        res.json(response.data);
+
+    } catch (error) {
+        console.error("AI analysis error:", error);
+
+        res.status(500).json({
+            message: "AI analysis failed"
+        });
+    }
+};
 
 export {
     getCategories,

@@ -7,14 +7,14 @@ import { formatDate } from '../constant';
 const PredictionLayout = () => {
     const dispatch = useDispatch()
     const { loggedUser } = useSelector(state => state.authentication)
-    
-    const { recentExenses } = useSelector(state => state.expense);
-    
+
+    const { recentExenses, aiAnalysisData } = useSelector(state => state.expense);
+
     useEffect(() => {
         if (loggedUser) {
             dispatch(getRecentExpenseThunk({ userId: loggedUser?.id }))
         }
-    },[loggedUser])
+    }, [loggedUser])
 
     return (
         <div className='w-1/5 mt-1 '>
@@ -22,18 +22,18 @@ const PredictionLayout = () => {
                 <div className='bg-gray-100/90 backdrop-filter backdrop-blur rounded-lg shadow-lg p-4'>
                     <div className='p-1'>
                         <h1 className='text-lg text-blue-950 font-semibold'>AI Forcast</h1>
-                        <p className='text-xs'> Predicted budget Last Month is higher</p>
-                        <h1 className='text-2xl py-2 text-green-800/80 font-bold'>₹ 21,300 /-</h1>
+                        <p className='text-xs'> Predicted next month expense will be approximately </p>
+                        <h1 className='text-2xl py-2 text-green-800/80 font-bold'>{`₹ ${aiAnalysisData?.predicted_monthly_expense?.toLocaleString()} /-`}</h1>
                     </div>
 
                     <div className='flex flex-col gap-y-3'>
                         <div className='bg-white/60 shadow-md rounded-lg p-3'>
-                            <h1 className='text-sm font-semibold text-red-600'>URGENCY</h1>
-                            <p className='text-xs text-black/70 font-semibold'>High overspending in Food category <span className='text-green-700'>₹ 1,000</span></p>
+                            <h1 className='text-sm font-semibold text-red-600'>WARNING</h1>
+                            {aiAnalysisData?.warnings ? <p className='text-xs text-black/70 font-semibold'>{aiAnalysisData?.warnings[0]}</p> : ''}
                         </div>
                         <div className='bg-white/80 shadow-md rounded-lg p-3'>
-                            <h1 className='text-sm font-semibold text-blue-950/90'>Suggestion</h1>
-                            <p className='text-xs text-black/70 font-semibold'>Reduce dining by <span className='text-amber-600'>15%</span></p>
+                            <h1 className='text-sm font-semibold text-orange-400'>Suggestion</h1>
+                            {aiAnalysisData.suggestions ? <p className='text-xs text-black/70 font-semibold'>{`${aiAnalysisData?.suggestions[0]}`}</p> : ''}
                         </div>
                     </div>
                 </div>
@@ -55,7 +55,7 @@ const PredictionLayout = () => {
 
                                 {/* Body */}
                                 <tbody>
-                                    {recentExenses.slice(0, 4).map((exp, index) => (
+                                    {recentExenses.slice(0, 3).map((exp, index) => (
                                         <tr
                                             key={index}
                                             className="border-b hover:bg-blue-50 transition duration-200"
@@ -71,7 +71,12 @@ const PredictionLayout = () => {
                             </table>
 
                         </div>
-                        <Link className=' bg-blue-200/80 w-fit mt-2 ml-1 text-sm px-2 rounded-full pb-1 font-semibold cursor-pointer text-blue-950/90 hover:bg-blue-300/50 ' to={"/report"}>see more</Link>
+                        <Link className=' bg-blue-200/80 w-fit mt-2 ml-1 
+                        text-sm px-2 rounded-full pb-1 font-semibold
+                        cursor-pointer text-blue-950/90
+                        hover:bg-blue-300/50 ' to={"/reports"}>
+                            see more
+                        </Link>
                     </div>
                 </div>
             </div>

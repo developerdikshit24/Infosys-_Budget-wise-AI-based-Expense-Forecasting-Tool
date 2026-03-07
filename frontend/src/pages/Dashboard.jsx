@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react'
-import Navbar from '../components/navbar'
 import SpendingChart from '../components/SpendingChart.jsx'
 import CategoryChart from '../components/CategoryChart.jsx'
 import { useSelector } from 'react-redux'

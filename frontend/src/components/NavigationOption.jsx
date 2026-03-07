@@ -23,7 +23,7 @@ const NavigationOption = () => {
         { name: "Add Expense", path: "/add-expense", icon: './Add Expense.png' },
         { name: "Categories", path: "/categories", icon: './Categories.png' },
         { name: "Reports", path: "/reports", icon: './Report.png' },
-        { name: "Expense Analysis", path: "/analysis", icon: './analytics.png' },
+        { name: "AI Analysis", path: "/ai-analysis", icon: './analytics.png' },
         { name: "Monthly Budget", path: "/monthly-budget", icon: './Monthly Budget.png' },
         { name: "Settings", path: "/setting", icon: './setting.png' },
     ];
