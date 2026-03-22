@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import SpendingChart from '../components/SpendingChart.jsx'
 import CategoryChart from '../components/CategoryChart.jsx'
 import { useSelector } from 'react-redux'
@@ -12,9 +12,9 @@ const Dashboard = () => {
 
 
     useEffect(() => {
-        if(!loggedUser) navigate('/login')
+        if (!loggedUser) navigate('/login')
     }, [loggedUser])
-    
+
     return (
         <div className='w-2/3 mx-2'>
             <div className='p-4 w-full'>
@@ -29,7 +29,6 @@ const Dashboard = () => {
                         <h1 className='text-lg text-blue-950 font-semibold'> Monthly Spend</h1>
                     </div>
                     <p className='text-2xl p-2 px-3 font-semibold text-green-700'>{`₹ ${dashboardData?.monthly_spend || 0} /-`}</p>
-                    <p className='px-2 text-sm text-black/80 font-semibold'><span className='font-semibold text-amber-600'>12%</span> more than last month </p>
                 </div>
                 <div className='bg-gray-100/80 w-1/4 p-2 backdrop-filter backdrop-blur rounded-lg shadow-lg'>
                     <div className='flex gap-2 items-center'>
@@ -37,7 +36,6 @@ const Dashboard = () => {
                         <h1 className='text-lg text-blue-950 font-semibold'>Monthly Budget</h1>
                     </div>
                     <p className='text-2xl p-2 px-3 font-semibold text-orange-700'>{`₹ ${loggedUser?.monthly_limit} /-`}</p>
-                    <p className='px-2 text-sm text-black/80 font-semibold'><span className='font-semibold text-amber-600'>12%</span> more than last month </p>
                 </div>
                 <div className='bg-gray-100/80 p-2 w-1/4 backdrop-filter backdrop-blur rounded-lg shadow-lg'>
                     <div className='flex gap-2 items-center'>
@@ -45,7 +43,6 @@ const Dashboard = () => {
                         <h1 className='text-lg text-blue-950 font-semibold'>Today's Spend</h1>
                     </div>
                     <p className='text-2xl p-2 px-3 font-semibold text-blue-900'>{`₹ ${dashboardData?.todays_spend || 0} /-`}</p>
-                    <p className='px-2 text-sm text-black/80 font-semibold'><span className='font-semibold text-green-600'>12%</span> less than last month </p>
                 </div>
                 <div className='bg-gray-100/80 p-2 w-1/4 backdrop-filter backdrop-blur rounded-lg shadow-lg'>
                     <div className='flex gap-2 items-center'>
@@ -53,7 +50,6 @@ const Dashboard = () => {
                         <h1 className='text-lg text-blue-950 font-semibold'>Remaining Balance</h1>
                     </div>
                     <p className='text-2xl p-2 px-3 font-semibold text-red-600'>{`₹ ${loggedUser?.monthly_limit - dashboardData?.monthly_spend || 0} /-`}</p>
-                    <p className='px-2 text-sm text-black/80 font-semibold'><span className='font-semibold text-red-500'>15%</span> more from last month </p>
                 </div>
             </div>
             <div className='flex w-full gap-2 my-2'>

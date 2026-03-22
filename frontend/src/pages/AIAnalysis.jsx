@@ -1,10 +1,11 @@
 import React from 'react'
 import { useSelector } from 'react-redux';
 import CategoryPercentGraph from '../components/CategoryPercentGraph';
-import { SendHorizonal } from 'lucide-react'
+import {  SendHorizonal } from 'lucide-react'
 const AIAnalysis = () => {
-    const { aiAnalysisData } = useSelector(state => state.expense);
+    const { aiAnalysisData, isFetching } = useSelector(state => state.expense);
 
+    
     return (
         <div className='w-[87%] h-full flex gap-4 relative justify-center items-center'>
             {/* Analysis Layout */}
@@ -38,7 +39,7 @@ const AIAnalysis = () => {
                         <h1 className='text-2xl pt-3 text-green-800/80 font-bold'>{`₹ ${aiAnalysisData?.predicted_monthly_expense?.toLocaleString()} /-`}</h1>
                         <p className='text-sm w-full pt-1 font-semibold font-sans px-4 text-black/50'><span className='font-bold bg-red-600/20 px-1 pr-0 mr-1 py-0.5 rounded-md text-red-700'>{aiAnalysisData?.increase_percent}% </span> Increase</p>
                     </div>
-                    <div>
+                    <div className='mt-4'>
                         <h1 className='text-md py-2 pt-2 text-blue-950 font-semibold'> Suggestions</h1>
                         {
                             aiAnalysisData?.suggestions?.length > 0 ? (
@@ -56,10 +57,14 @@ const AIAnalysis = () => {
                             )
                         }
 
+                    </div>
+                    <div className='mt-4'>
+                        <h1 className='text-md py-2 pt-2 text-blue-950 font-semibold'> Predicted Next Month Budget</h1>
+                        <h1 className='text-2xl text-orange-600/80 pl-2 font-bold'>{`₹ ${aiAnalysisData?.predicted_balance?.toLocaleString()} /-`}</h1>
+                        <p className='text-sm w-full pt-1 font-semibold font-sans px-4 text-black/50'>Set your next month budget</p>
+                    </div>
                 </div>
-
             </div>
-        </div>
         </div >
     )
 }

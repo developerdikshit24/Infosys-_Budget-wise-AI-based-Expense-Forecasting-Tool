@@ -67,11 +67,12 @@ export default function CategoryChart() {
                 fill="white"
                 textAnchor="middle"
                 dominantBaseline="central"
-                fontSize={12}
+                fontSize={10}
                 fontWeight="600"
             >
                 {name}
             </text>
+            
         );
     };
     return (
@@ -80,8 +81,8 @@ export default function CategoryChart() {
                 <PieChart>
                     <Pie
                         data={formattedExpenses}
-                        innerRadius={80}
-                        outerRadius={140}
+                        innerRadius={60}
+                        outerRadius={120}
                         paddingAngle={5}
                         label={renderCustomizedLabel}
                         dataKey="total"

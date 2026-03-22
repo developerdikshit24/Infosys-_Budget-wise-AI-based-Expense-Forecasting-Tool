@@ -12,7 +12,7 @@ export const verifyJwt = asyncHandler(async (req, res, next) => {
         }
         const decodedToken = jwt.verify(token, process.env.JWT_SECRET)
         const [user] = await db.query(
-            "Select id, email, name, monthly_limit FROM users WHERE id = ?",
+            "Select id, email, name, monthly_limit, income FROM users WHERE id = ?",
             [decodedToken?.id]
         )
 

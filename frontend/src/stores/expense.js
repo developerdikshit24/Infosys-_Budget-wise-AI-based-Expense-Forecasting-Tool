@@ -22,6 +22,7 @@ export const addExpenseThunk = createAsyncThunk('expense/addExpense', async (dat
         dispatch(getRecentExpenseThunk({ userId: data.user_id }))
         dispatch(getDashboardDataThunk())
         dispatch(getCategoryTotalExpenseThunk())
+        dispatch(getAIAnalysisThunk())
         toast.success(res.data.message);
         return res.data.data
     } catch (error) {
