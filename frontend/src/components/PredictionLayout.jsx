@@ -1,14 +1,12 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router';
 import { getRecentExpenseThunk } from '../stores/expense';
-import { formatDate } from '../constant';
 
 const PredictionLayout = () => {
     const dispatch = useDispatch()
     const { loggedUser } = useSelector(state => state.authentication)
 
-    const { recentExenses, aiAnalysisData } = useSelector(state => state.expense);
+    const { aiAnalysisData } = useSelector(state => state.expense);
 
     useEffect(() => {
         if (loggedUser) {
@@ -37,46 +35,22 @@ const PredictionLayout = () => {
                         </div>
                     </div>
                 </div>
-                <div className='bg-gray-100/90 backdrop-filter backdrop-blur rounded-lg shadow-lg'>
-                    <div className='flex flex-col p-2'>
-                        <div className='font-semibold text-blue-950/80 text-lg py-2 pl-1'>Recent Trancations</div>
-                        <div className="bg-white/70 backdrop-blur-lg rounded-lg shadow-md px-4 w-full pb-3">
-
-                            <table className="w-full text-left border-collapse">
-
-                                {/* Header */}
-                                <thead>
-                                    <tr className="border-b text-blue-900 text-xs">
-                                        <th className="py-3 pr-2">Date</th>
-                                        <th className="py-3 pr-2">Category</th>
-                                        <th className="py-3 text-right">Amount</th>
-                                    </tr>
-                                </thead>
-
-                                {/* Body */}
-                                <tbody>
-                                    {recentExenses.slice(0, 3).map((exp, index) => (
-                                        <tr
-                                            key={index}
-                                            className="border-b hover:bg-blue-50 transition duration-200"
-                                        >
-                                            <td className="py-3 text-[10px] px-0.5 text-blue-950/80 font-semibold" >{formatDate(exp.expense_date)}</td>
-                                            <td className="py-3 text-xs">{exp?.category_name}</td>
-                                            <td className="py-3 text-xs text-right font-bold text-red-600">
-                                                ₹{exp.amount.toLocaleString()}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-
+                <div className='bg-gray-100/90 backdrop-filter backdrop-blur rounded-lg shadow-lg p-2'>
+                    <div className='flex flex-col gap-y-4 p-2'>
+                        <div className="bg-white/70 backdrop-blur-lg rounded-lg shadow-md px-4 w-full pb-3 p-4">
+                            <div className='flex gap-2 items-center'>
+                                <div className="w-1 h-5 bg-green-600 rounded-full"></div>
+                                <h1 className='text-md text-blue-950 font-semibold'>Monthly Income</h1>
+                            </div>
+                            <p className='text-xl px-3 font-semibold text-green-700 '>{`₹ ${(loggedUser?.income)?.toLocaleString() || 0} /-`}</p>
                         </div>
-                        <Link className=' bg-blue-200/80 w-fit mt-2 ml-1 
-                        text-sm px-2 rounded-full pb-1 font-semibold
-                        cursor-pointer text-blue-950/90
-                        hover:bg-blue-300/50 ' to={"/reports"}>
-                            see more
-                        </Link>
+                        <div className="bg-white/70 backdrop-blur-lg rounded-lg shadow-md px-4 w-full pb-3 p-4">
+                            <div className='flex gap-2 items-center'>
+                                <div className="w-1 h-5 bg-cyan-600 rounded-full"></div>
+                                <h1 className='text-md text-blue-950 font-semibold'>Saving Ratio</h1>
+                            </div>
+                            <p className='text-xl px-3 font-semibold text-cyan-600 '>{`₹ ${(loggedUser?.income)?.toLocaleString() || 0} /-`}</p>
+                        </div>
                     </div>
                 </div>
             </div>

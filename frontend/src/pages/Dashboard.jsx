@@ -14,7 +14,7 @@ const Dashboard = () => {
     useEffect(() => {
         if (!loggedUser) navigate('/login')
     }, [loggedUser])
-
+    console.log(dashboardData)
     return (
         <div className='w-2/3 mx-2'>
             <div className='p-4 w-full'>
@@ -28,28 +28,28 @@ const Dashboard = () => {
                         <div className="w-1 h-5 bg-red-700 rounded-full"></div>
                         <h1 className='text-lg text-blue-950 font-semibold'> Monthly Spend</h1>
                     </div>
-                    <p className='text-2xl p-2 px-3 font-semibold text-green-700'>{`₹ ${dashboardData?.monthly_spend || 0} /-`}</p>
+                    <p className='text-2xl p-2 px-3 font-semibold text-red-600'>{`₹ ${dashboardData?.monthly_spend?.toLocaleString() || 0} /-`}</p>
                 </div>
                 <div className='bg-gray-100/80 w-1/4 p-2 backdrop-filter backdrop-blur rounded-lg shadow-lg'>
                     <div className='flex gap-2 items-center'>
                         <div className="w-1 h-5 bg-amber-600 rounded-full"></div>
                         <h1 className='text-lg text-blue-950 font-semibold'>Monthly Budget</h1>
                     </div>
-                    <p className='text-2xl p-2 px-3 font-semibold text-orange-700'>{`₹ ${loggedUser?.monthly_limit} /-`}</p>
+                    <p className='text-2xl p-2 px-3 font-semibold text-orange-700'>{`₹ ${loggedUser?.monthly_limit?.toLocaleString() } /-`}</p>
                 </div>
                 <div className='bg-gray-100/80 p-2 w-1/4 backdrop-filter backdrop-blur rounded-lg shadow-lg'>
                     <div className='flex gap-2 items-center'>
                         <div className="w-1 h-5 bg-purple-600 rounded-full"></div>
                         <h1 className='text-lg text-blue-950 font-semibold'>Today's Spend</h1>
                     </div>
-                    <p className='text-2xl p-2 px-3 font-semibold text-blue-900'>{`₹ ${dashboardData?.todays_spend || 0} /-`}</p>
+                    <p className='text-2xl p-2 px-3 font-semibold text-blue-900'>{`₹ ${dashboardData?.todays_spend?.toLocaleString() || 0} /-`}</p>
                 </div>
                 <div className='bg-gray-100/80 p-2 w-1/4 backdrop-filter backdrop-blur rounded-lg shadow-lg'>
                     <div className='flex gap-2 items-center'>
                         <div className="w-1 h-5 bg-green-600 rounded-full"></div>
                         <h1 className='text-lg text-blue-950 font-semibold'>Remaining Balance</h1>
                     </div>
-                    <p className='text-2xl p-2 px-3 font-semibold text-red-600'>{`₹ ${loggedUser?.monthly_limit - dashboardData?.monthly_spend || 0} /-`}</p>
+                    <p className='text-2xl p-2 px-3 font-semibold text-red-600'>{`₹ ${(loggedUser?.monthly_limit - dashboardData?.monthly_spend)?.toLocaleString() || 0} /-`}</p>
                 </div>
             </div>
             <div className='flex w-full gap-2 my-2'>

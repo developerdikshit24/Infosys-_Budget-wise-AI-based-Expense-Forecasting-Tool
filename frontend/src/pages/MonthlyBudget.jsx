@@ -33,8 +33,8 @@ const MonthlyBudget = () => {
                     </div>
                     <p className='text-sm font-semibold text-black/70 pl-7'>Plan and Set Your Monthly Limit</p>
                     {/* Input Monthly Limit */}
-                    <div className='p-4'>
-                        <div className='overflow-hidden p-4'>
+                    <div className=''>
+                        <div className='overflow-hidden'>
                             <h1 className='text-lg py-2 font-semibold text-blue-950'>Monthly Budget Amount</h1>
                             <div className="relative">
                                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-lg font-semibold">
@@ -113,7 +113,7 @@ const MonthlyBudget = () => {
                     </div>
 
                     {/* Update Monthly Limit */}
-                    <div className='w-full flex justify-end p-4'>
+                    <div className='w-full flex justify-end pt-4'>
                         <button type='button' onClick={handleClick} className='px-2 py-1.5 bg-[#f59e0b] w-1/12 text-white font-bold rounded-md'>Update</button>
                     </div>
                 </div>

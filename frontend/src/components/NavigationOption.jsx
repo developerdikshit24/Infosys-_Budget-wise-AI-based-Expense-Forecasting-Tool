@@ -25,6 +25,7 @@ const NavigationOption = () => {
         { name: "Reports", path: "/reports", icon: './Report.png' },
         { name: "AI Analysis", path: "/ai-analysis", icon: './analytics.png' },
         { name: "Monthly Budget", path: "/monthly-budget", icon: './Monthly Budget.png' },
+        { name: "Profile", path: "/profile", icon: './profile.png' },
     ];
 
     return (

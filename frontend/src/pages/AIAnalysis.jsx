@@ -7,7 +7,7 @@ const AIAnalysis = () => {
 
     
     return (
-        <div className='w-[87%] h-full flex gap-4 relative justify-center items-center'>
+        <div className='w-[87%] h-full flex mt-16 gap-4 relative justify-center items-center'>
             {/* Analysis Layout */}
             <div className='w-2/3 bg-gray-100/50 backdrop-filter backdrop-blur flex flex-col gap-y-2 rounded-lg shadow-lg p-4'>
                 <div className='w-full flex gap-4 items-center'>

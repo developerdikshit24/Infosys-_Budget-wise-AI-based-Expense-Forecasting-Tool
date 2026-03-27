@@ -76,7 +76,7 @@ export default function CategoryChart() {
         );
     };
     return (
-        <div className="w-full h-80">
+        <div className="w-full h-70">
             <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                     <Pie
