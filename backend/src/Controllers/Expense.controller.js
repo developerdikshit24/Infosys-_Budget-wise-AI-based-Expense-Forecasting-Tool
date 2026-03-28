@@ -55,6 +55,7 @@ const getRecentExpense = asyncHandler(async (req, res) => {
         const [result] = await db.query(
             `SELECT 
             c.category_name,
+            e.id,
             e.amount,
             e.description,
             e.expense_date
@@ -202,7 +203,7 @@ const deletUserCategory = asyncHandler(async (req, res) => {
         const { category_id } = req.body
 
         const [result] = await db.query(
-            `Delete from categories
+            `delete from categories
              where user_id = ?
              AND
              id = ?
@@ -216,7 +217,7 @@ const deletUserCategory = asyncHandler(async (req, res) => {
 
 })
 
-const getAIAnalysis = async (req, res) => {
+const getAIAnalysis = asyncHandler(async (req, res) => {
     try {
 
         const [expense] = await db.query(
@@ -251,8 +252,6 @@ const getAIAnalysis = async (req, res) => {
             `,
             [req.user.id]
         );
-        console.log(budgetResult);
-        
 
         const userBudget = budgetResult.length ? Number(budgetResult[0].monthly_limit) : 0;
 
@@ -287,8 +286,28 @@ const getAIAnalysis = async (req, res) => {
             message: "AI analysis failed"
         });
     }
-};
+});
 
+const deleteExpense = asyncHandler(async (req, res) => {
+    try {
+        const Error = validationResult(req)
+        if (!Error.isEmpty()) {
+            throw new ApiError(400, Error.array())
+        }
+        const { id } = req.body;
+        if(!req.user || !id) throw new ApiError(404, "Invaild Operation")
+        
+        const [result] = await db.query(
+            `delete from expenses where id = ? and user_id = ?` ,
+            [id, req.user.id]
+        )
+        
+        if (!result) throw new ApiError(500, "Internal Error or Invaild Operation")
+        return res.status(200).json(new ApiResponse(200, {}, "Expense delete successfully"))
+    } catch (error) {
+        throw new ApiError(500, error)
+    }
+})
 export {
     getCategories,
     addExpense,
@@ -297,5 +316,6 @@ export {
     totalCatgeoryExpense,
     addExpenseCategory,
     deletUserCategory,
-    getAIAnalysis
+    getAIAnalysis,
+    deleteExpense
 }

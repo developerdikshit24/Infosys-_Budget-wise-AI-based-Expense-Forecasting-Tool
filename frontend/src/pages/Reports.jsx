@@ -1,14 +1,20 @@
 import { IndianRupee, Pencil, Trash2 } from 'lucide-react'
 import React from 'react'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { formatDate } from '../constant';
+import MonthSelect from '../components/MonthSelect';
+import { deleteExpenseThunk } from '../stores/expense';
 
 const Reports = () => {
-  const { recentExenses } = useSelector(state => state.expense);
-  console.log(recentExenses);
-  
+  const { recentExenses, transationFilter } = useSelector(state => state.expense);
+  const dispatch = useDispatch()
+  const handelDelete = (exp_id)=>{
+    dispatch(deleteExpenseThunk(exp_id))
+    
+  }
+
   return (
-    <div className='w-[87%] h-full flex relative justify-center items-center'>
+    <div className='w-[87%] h-full mt-8 flex relative justify-center items-center'>
       <div className="bg-gray-100/80 flex flex-col gap-y-4 backdrop-filter backdrop-blur rounded-lg w-11/12 shadow-lg p-4">
         {/* Title_Section */}
         <div id='Title_Section'>
@@ -19,14 +25,7 @@ const Reports = () => {
             </div>
           </div>
           <div className="flex w-full  items-start justify-end">
-            <div className='bg-white/80 p-2 rounded-xl'>
-              <select name="transaction_data" className='pr-2'>
-                <option value="All">All</option>
-                <option value="This Month">This Month</option>
-                <option value="Last Month">Last Month</option>
-              </select>
-            </div>
-
+            <MonthSelect />
           </div>
         </div>
         <div id='Report_section'>
@@ -43,7 +42,7 @@ const Reports = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {recentExenses?.map((exp, index) => (
+                  {transationFilter == "ALL" ? recentExenses?.map((exp, index) => (
                     <tr
                       key={index}
                       className="border-b hover:bg-blue-50 transition duration-200"
@@ -62,7 +61,45 @@ const Reports = () => {
                       </td>
                       <td className="py-3 text-left">
                         <div className='flex gap-1'>
-                          {exp?.description || "No Notes" }
+                          {exp?.description || "No Notes"}
+                        </div>
+                      </td>
+
+                      <td className="py-3 text-center flex gap-2 justify-center font-semibold ">
+                        <button onClick={() => { handelDelete(exp.id)}} className='px-2 py-0.5 disabled:bg-gray-300 disabled:text-gray-500 rounded-md bg-gray-200 cursor-pointer hover:bg-red-500 hover:text-white text-center'>
+                          <div className='flex gap-1'>
+                            {<Trash2 className='w-4' />}
+                          </div>
+                        </button>
+                        <button className='px-2 py-0.5 disabled:bg-gray-300 disabled:text-gray-500 rounded-md bg-gray-200 cursor-pointer hover:bg-red-500 hover:text-white text-center'>
+                          <div className='flex gap-1'>
+                            {<Pencil className='w-4' />}
+                          </div>
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                    :
+                    recentExenses.filter((exp) => new Date(exp?.expense_date).getMonth() === Number(transationFilter))?.map((exp, index) => (
+                    <tr
+                      key={index}
+                      className="border-b hover:bg-blue-50 transition duration-200"
+                    >
+                      <td className="py-3 text-left pl-2 font-semibold px-0.5">{formatDate(exp?.expense_date)} </td>
+                      <td className="py-3 text-left">
+                        <div className='flex gap-1'>
+                          {exp?.category_name}
+                        </div>
+                      </td>
+                      <td className="py-3 text-left">
+                        <div className='flex gap-1'>
+                          {<IndianRupee className='w-4' />}
+                          {exp?.amount}
+                        </div>
+                      </td>
+                      <td className="py-3 text-left">
+                        <div className='flex gap-1'>
+                          {exp?.description || "No Notes"}
                         </div>
                       </td>
 
@@ -79,7 +116,9 @@ const Reports = () => {
                         </button>
                       </td>
                     </tr>
-                 ))}
+                  ))
+                    
+                }
                 </tbody>
               </table>
             </div>

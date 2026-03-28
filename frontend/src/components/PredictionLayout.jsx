@@ -6,14 +6,14 @@ const PredictionLayout = () => {
     const dispatch = useDispatch()
     const { loggedUser } = useSelector(state => state.authentication)
 
-    const { aiAnalysisData } = useSelector(state => state.expense);
+    const { aiAnalysisData, dashboardData } = useSelector(state => state.expense);
 
     useEffect(() => {
         if (loggedUser) {
             dispatch(getRecentExpenseThunk({ userId: loggedUser?.id }))
         }
     }, [loggedUser])
-
+    const savingRatio = ((loggedUser?.income - dashboardData?.monthly_spend) / loggedUser?.income) * 100
     return (
         <div className='w-1/5 mt-1 '>
             <div className='w-full flex flex-col gap-y-3'>
@@ -49,7 +49,7 @@ const PredictionLayout = () => {
                                 <div className="w-1 h-5 bg-cyan-600 rounded-full"></div>
                                 <h1 className='text-md text-blue-950 font-semibold'>Saving Ratio</h1>
                             </div>
-                            <p className='text-xl px-3 font-semibold text-cyan-600 '>{`₹ ${(loggedUser?.income)?.toLocaleString() || 0} /-`}</p>
+                            <p className='text-xl px-3 font-semibold text-cyan-600 '>{`${savingRatio?.toLocaleString() || 0}%`}</p>
                         </div>
                     </div>
                 </div>

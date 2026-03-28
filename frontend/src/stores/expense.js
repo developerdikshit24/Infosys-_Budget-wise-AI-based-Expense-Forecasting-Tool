@@ -95,10 +95,9 @@ export const deleteUserExpenseCategory = createAsyncThunk('expense/deleteUserExp
     }
 })
 
-export const getAIAnalysisThunk = createAsyncThunk('expense/getAIAnalysis', async (_, {dispatch, rejectWithValue}) => {
+export const getAIAnalysisThunk = createAsyncThunk('expense/getAIAnalysis', async (_, { dispatch, rejectWithValue }) => {
     try {
         const res = await axiosInstance.post('/expense/getAIAnalysis');
-        console.log(res.data);
         return res.data
     } catch (error) {
         toast.error(extractErrorMessage(error.response.data || "Internal Server Error!"))
@@ -106,19 +105,28 @@ export const getAIAnalysisThunk = createAsyncThunk('expense/getAIAnalysis', asyn
     }
 })
 
+export const deleteExpenseThunk = createAsyncThunk('expense/deleteExpense', async (data, { dispatch, rejectWithValue }) => {
+    try {
+        const res = await axiosInstance.post('/expense/delete-expense', { "id": data });
+        dispatch(getRecentExpenseThunk())
+        toast.success(res.data.message);
+    } catch (error) {
+        toast.error(extractErrorMessage(error.response.data || "Internal Server Error!"))
+        return rejectWithValue(error.response.data || "Internal Server Error !")
+    }
+})
 
 
 const InitialStage = {
     expenseCatgories: [],
     recentExenses: [],
     userExpenseCategory: [],
-    aiAnalysisData :[],
+    aiAnalysisData: [],
+    transationFilter: 'ALL',
     dashboardData: null,
     categoryExpenseTotal: null,
     isFetching: false,
     isAddExpenseCardActive: false,
-    isFetching: false
-
 }
 
 const expenseSlice = createSlice({
@@ -127,7 +135,11 @@ const expenseSlice = createSlice({
     reducers: {
         ToggleAddExpenseCard: (state) => {
             state.isAddExpenseCardActive = !state.isAddExpenseCardActive
+        },
+        updateTransactionFilterOption: (state, action) => {
+            state.transationFilter = action.payload
         }
+
     },
     extraReducers: (builder) => {
         builder
@@ -199,11 +211,20 @@ const expenseSlice = createSlice({
             .addCase(getAIAnalysisThunk.rejected, (state) => {
                 state.isFetching = false
             })
+            .addCase(deleteExpenseThunk.pending, (state) => {
+                state.isFetching = true
+            })
+            .addCase(deleteExpenseThunk.fulfilled, (state) => {
+                state.isFetching = false
+            })
+            .addCase(deleteExpenseThunk.rejected, (state) => {
+                state.isFetching = false
+            })
 
     }
 })
 
 
 
-export const { ToggleAddExpenseCard } = expenseSlice.actions
+export const { ToggleAddExpenseCard, updateTransactionFilterOption } = expenseSlice.actions
 export default expenseSlice.reducer

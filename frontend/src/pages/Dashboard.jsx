@@ -16,7 +16,7 @@ const Dashboard = () => {
     }, [loggedUser])
     console.log(dashboardData)
     return (
-        <div className='w-2/3 mx-2'>
+        <div className='w-2/3 mx-2 mt-8'>
             <div className='p-4 w-full'>
                 <h1 className='text-2xl font-semibold text-blue-950/80'>{`Hello, ${loggedUser?.name?.split(' ')[0]} ✌🏻`} </h1>
                 <p className='text-sm font-semibold text-gray-950/80'>{getFormattedDate()}</p>
@@ -62,7 +62,7 @@ const Dashboard = () => {
                     <SpendingChart />
                 </div>
                 <div className='w-2/5 bg-gray-100/80 backdrop-filter backdrop-blur rounded-lg shadow-lg'>
-                    <div className='flex gap-3 items-center p-2'>
+                    <div className='flex gap-3 items-center p-2 pt-4'>
                         <div className="w-1 h-6 bg-fuchsia-600 rounded-full "></div>
                         <h2 className="font-semibold text-lg">Expense By Category</h2>
                     </div>
